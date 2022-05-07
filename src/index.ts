@@ -58,12 +58,9 @@ let posts = [
     },
 ]
 
-const error = (field: string, message: string) => {
+const error = (errorMessages: Array<{ field: string, message: string }>) => {
     return {
-        "errorsMessages": [{
-            "message": message,
-            "field": field,
-        }],
+        "errorsMessages": errorMessages,
         "resultCode": 1
     }
 }
@@ -86,12 +83,22 @@ app.get('/bloggers/:bloggerId', (req: Request, res: Response) => {
     }
 })
 app.post('/bloggers', (req: Request, res: Response) => {
+    let errorMessages = []
     if (!req.body.name || req.body.name.length > 15) {
-        res.status(400).send(error("name", "Некорректно указано name"))
+        errorMessages.push({
+            "message": "Некорректно указано name",
+            "field": "name",
+        })
     }
     let regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
     if (!regexp.test(req.body.youtubeUrl)) {
-        res.status(400).send(error("youtubeUrl", "Некорректно указано youtubeUrl"))
+        errorMessages.push({
+            "message": "Некорректно указано youtubeUrl",
+            "field": "youtubeUrl",
+        })
+    }
+    if (errorMessages.length > 0) {
+        res.status(400).send(error(errorMessages))
     }
     const newBlogger = {
         id: +(new Date()),
@@ -102,17 +109,27 @@ app.post('/bloggers', (req: Request, res: Response) => {
     res.status(201).send(newBlogger)
 })
 app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
+    let errorMessages = []
     const id = +req.params.bloggerId
     const isBloggerExist = bloggers.findIndex(b => b.id === id) !== -1
     if (!isBloggerExist) {
         res.send(404)
     }
     if (!req.body.name || req.body.name.length > 15) {
-        res.status(400).send(error("name", "Некорректно указано name"))
+        errorMessages.push({
+            "message": "Некорректно указано name",
+            "field": "name",
+        })
     }
     let regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
     if (!regexp.test(req.body.youtubeUrl)) {
-        res.status(400).send(error("youtubeUrl", "Некорректно указано youtubeUrl"))
+        errorMessages.push({
+            "message": "Некорректно указано youtubeUrl",
+            "field": "youtubeUrl",
+        })
+    }
+    if (errorMessages.length > 0) {
+        res.status(400).send(error(errorMessages))
     }
     bloggers = bloggers.map(b => b.id === id ? {...b, name: req.body.name, youtubeUrl: req.body.youtubeUrl} : b)
     res.send(204)
@@ -143,6 +160,7 @@ app.get('/posts/:postId', (req: Request, res: Response) => {
     }
 })
 app.post('/posts', (req: Request, res: Response) => {
+    let errorMessages = []
     const id = +req.body.bloggerId
     const bloggerIndex = bloggers.findIndex(b => b.id === id)
     const isBloggerExist = bloggerIndex !== -1
@@ -150,13 +168,25 @@ app.post('/posts', (req: Request, res: Response) => {
         res.send(404)
     }
     if (!req.body.title || req.body.title.length > 30) {
-        res.status(400).send(error("title", "Некорректно указано title"))
+        errorMessages.push({
+            "message": "Некорректно указано title",
+            "field": "title",
+        })
     }
     if (!req.body.shortDescription || req.body.shortDescription.length > 100) {
-        res.status(400).send(error("shortDescription", "Некорректно указано shortDescription"))
+        errorMessages.push({
+            "message": "Некорректно указано shortDescription",
+            "field": "shortDescription",
+        })
     }
     if (!req.body.content || req.body.content.length > 1000) {
-        res.status(400).send(error("content", "Некорректно указано content"))
+        errorMessages.push({
+            "message": "Некорректно указано content",
+            "field": "content",
+        })
+    }
+    if (errorMessages.length > 0) {
+        res.status(400).send(error(errorMessages))
     }
     const newPost = {
         id: +(new Date()),
@@ -170,6 +200,7 @@ app.post('/posts', (req: Request, res: Response) => {
     res.status(201).send(newPost)
 })
 app.put('/posts/:postId', (req: Request, res: Response) => {
+    let errorMessages = []
     const id = +req.params.postId
     const isPostExist = posts.findIndex(p => p.id === id) !== -1
     if (!isPostExist) {
@@ -181,13 +212,25 @@ app.put('/posts/:postId', (req: Request, res: Response) => {
         res.send(404)
     }
     if (!req.body.title || req.body.title.length > 30) {
-        res.status(400).send(error("title", "Некорректно указано title"))
+         errorMessages.push({
+            "message": "Некорректно указано title",
+            "field": "title",
+        })
     }
     if (!req.body.shortDescription || req.body.shortDescription.length > 100) {
-        res.status(400).send(error("shortDescription", "Некорректно указано shortDescription"))
+        errorMessages.push({
+            "message": "Некорректно указано shortDescription",
+            "field": "shortDescription",
+        })
     }
     if (!req.body.content || req.body.content.length > 1000) {
-        res.status(400).send(error("content", "Некорректно указано content"))
+        errorMessages.push({
+            "message": "Некорректно указано content",
+            "field": "content",
+        })
+    }
+    if (errorMessages.length > 0) {
+        res.status(400).send(error(errorMessages))
     }
     posts = posts.map(p => p.id === id ? {
         ...p,
