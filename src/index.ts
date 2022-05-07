@@ -165,7 +165,10 @@ app.post('/posts', (req: Request, res: Response) => {
     const bloggerIndex = bloggers.findIndex(b => b.id === id)
     const isBloggerExist = bloggerIndex !== -1
     if (!isBloggerExist) {
-        res.send(404)
+        errorMessages.push({
+            "message": "Некорректно указано bloggerId",
+            "field": "bloggerId",
+        })
     }
     if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
         errorMessages.push({
@@ -209,7 +212,10 @@ app.put('/posts/:postId', (req: Request, res: Response) => {
     const bloggerIndex = bloggers.findIndex(b => b.id === +req.body.bloggerId)
     const isBloggerExist = bloggerIndex !== -1
     if (!isBloggerExist) {
-        res.send(404)
+        errorMessages.push({
+            "message": "Некорректно указано bloggerId",
+            "field": "bloggerId",
+        })
     }
     if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
          errorMessages.push({
