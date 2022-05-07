@@ -98,6 +98,7 @@ app.post('/bloggers', (req: Request, res: Response) => {
         name: req.body.name,
         youtubeUrl: req.body.youtubeUrl,
     }
+    bloggers.push(newBlogger)
     res.status(201).send(newBlogger)
 })
 app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
@@ -165,6 +166,7 @@ app.post('/posts', (req: Request, res: Response) => {
         bloggerId: +req.body.bloggerId,
         bloggerName: bloggers[bloggerIndex].name,
     }
+    posts.push(newPost)
     res.status(201).send(newPost)
 })
 app.put('/posts/:postId', (req: Request, res: Response) => {
