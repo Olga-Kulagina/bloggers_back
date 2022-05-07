@@ -128,7 +128,7 @@ app.delete('/bloggers/:bloggerId', (req: Request, res: Response) => {
     }
 })
 
-app.get('/posts', (req: Request, res: Response) => {
+/*app.get('/posts', (req: Request, res: Response) => {
     res.send(posts)
 })
 app.get('/posts/:postId', (req: Request, res: Response) => {
@@ -207,7 +207,7 @@ app.delete('/posts/:postId', (req: Request, res: Response) => {
     } else {
         res.send(404)
     }
-})
+})*/
 
 
 app.listen(port, () => {
