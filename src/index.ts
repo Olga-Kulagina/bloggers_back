@@ -84,17 +84,14 @@ app.get('/bloggers/:bloggerId', (req: Request, res: Response) => {
 })
 app.post('/bloggers', (req: Request, res: Response) => {
     let errorMessages = []
-    if (!req.body.name || !req.body.youtubeUrl) {
-        res.send(400)
-    }
-    if (!req.body.name.trim() || req.body.name.length > 15) {
+    if (!req.body.name || !req.body.name.trim() || req.body.name.length > 15) {
         errorMessages.push({
             "message": "Некорректно указано name",
             "field": "name",
         })
     }
     let regexp = /https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?/
-    if (!regexp.test(req.body.youtubeUrl) || req.body.youtubeUrl.length > 100) {
+    if (!req.body.youtubeUrl || !regexp.test(req.body.youtubeUrl) || req.body.youtubeUrl.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано youtubeUrl",
             "field": "youtubeUrl",
@@ -115,17 +112,17 @@ app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
     let errorMessages = []
     const id = +req.params.bloggerId
     const isBloggerExist = bloggers.findIndex(b => b.id === id) !== -1
-    if (!isBloggerExist || !req.body.name || !req.body.youtubeUrl) {
+    if (!isBloggerExist) {
         res.send(404)
     }
-    if (!req.body.name.trim() || req.body.name.length > 15) {
+    if (!req.body.name || !req.body.name.trim() || req.body.name.length > 15) {
         errorMessages.push({
             "message": "Некорректно указано name",
             "field": "name",
         })
     }
     let regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
-    if (!regexp.test(req.body.youtubeUrl)  || req.body.youtubeUrl.length > 100) {
+    if (!req.body.youtubeUrl || !regexp.test(req.body.youtubeUrl)  || req.body.youtubeUrl.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано youtubeUrl",
             "field": "youtubeUrl",
@@ -167,22 +164,22 @@ app.post('/posts', (req: Request, res: Response) => {
     const id = +req.body.bloggerId
     const bloggerIndex = bloggers.findIndex(b => b.id === id)
     const isBloggerExist = bloggerIndex !== -1
-    if (!isBloggerExist || !req.body.title || !req.body.shortDescription || !req.body.content) {
+    if (!isBloggerExist) {
         res.send(404)
     }
-    if (!req.body.title.trim() || req.body.title.length > 30) {
+    if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
         errorMessages.push({
             "message": "Некорректно указано title",
             "field": "title",
         })
     }
-    if (!req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
+    if (!req.body.shortDescription || !req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано shortDescription",
             "field": "shortDescription",
         })
     }
-    if (!req.body.content.trim() || req.body.content.length > 1000) {
+    if (!req.body.content || !req.body.content.trim() || req.body.content.length > 1000) {
         errorMessages.push({
             "message": "Некорректно указано content",
             "field": "content",
@@ -206,7 +203,7 @@ app.put('/posts/:postId', (req: Request, res: Response) => {
     let errorMessages = []
     const id = +req.params.postId
     const isPostExist = posts.findIndex(p => p.id === id) !== -1
-    if (!isPostExist  || !req.body.title || !req.body.shortDescription || !req.body.content) {
+    if (!isPostExist) {
         res.send(404)
     }
     const bloggerIndex = bloggers.findIndex(b => b.id === +req.body.bloggerId)
@@ -214,19 +211,19 @@ app.put('/posts/:postId', (req: Request, res: Response) => {
     if (!isBloggerExist) {
         res.send(404)
     }
-    if (!req.body.title.trim() || req.body.title.length > 30) {
+    if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
          errorMessages.push({
             "message": "Некорректно указано title",
             "field": "title",
         })
     }
-    if (!req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
+    if (!req.body.shortDescription || !req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано shortDescription",
             "field": "shortDescription",
         })
     }
-    if (!req.body.content.trim() || req.body.content.length > 1000) {
+    if (!req.body.content || !req.body.content.trim() || req.body.content.length > 1000) {
         errorMessages.push({
             "message": "Некорректно указано content",
             "field": "content",
