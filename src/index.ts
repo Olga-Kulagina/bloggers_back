@@ -84,14 +84,14 @@ app.get('/bloggers/:bloggerId', (req: Request, res: Response) => {
 })
 app.post('/bloggers', (req: Request, res: Response) => {
     let errorMessages = []
-    if (!req.body.name || req.body.name.length > 15) {
+    if (!req.body.name.trim() || req.body.name.length > 15) {
         errorMessages.push({
             "message": "Некорректно указано name",
             "field": "name",
         })
     }
-    let regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
-    if (!regexp.test(req.body.youtubeUrl)) {
+    let regexp = /https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?/
+    if (!regexp.test(req.body.youtubeUrl) || req.body.youtubeUrl.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано youtubeUrl",
             "field": "youtubeUrl",
@@ -115,14 +115,14 @@ app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
     if (!isBloggerExist) {
         res.send(404)
     }
-    if (!req.body.name || req.body.name.length > 15) {
+    if (!req.body.name.trim() || req.body.name.length > 15) {
         errorMessages.push({
             "message": "Некорректно указано name",
             "field": "name",
         })
     }
     let regexp = /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
-    if (!regexp.test(req.body.youtubeUrl)) {
+    if (!regexp.test(req.body.youtubeUrl)  || req.body.youtubeUrl.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано youtubeUrl",
             "field": "youtubeUrl",
@@ -167,19 +167,19 @@ app.post('/posts', (req: Request, res: Response) => {
     if (!isBloggerExist) {
         res.send(404)
     }
-    if (!req.body.title || req.body.title.length > 30) {
+    if (!req.body.title.trim() || req.body.title.length > 30) {
         errorMessages.push({
             "message": "Некорректно указано title",
             "field": "title",
         })
     }
-    if (!req.body.shortDescription || req.body.shortDescription.length > 100) {
+    if (!req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
         errorMessages.push({
             "message": "Некорректно указано shortDescription",
             "field": "shortDescription",
         })
     }
-    if (!req.body.content || req.body.content.length > 1000) {
+    if (!req.body.content.trim() || req.body.content.length > 1000) {
         errorMessages.push({
             "message": "Некорректно указано content",
             "field": "content",
