@@ -13,16 +13,13 @@ export let bloggers = [
 ]
 
 bloggersRouter.get('/', async (req: Request, res: Response) => {
-    const foundBloggers = await bloggersService.findBloggers(req.query.name?.toString())
+    const foundBloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString())
     res.send(foundBloggers)
 })
 bloggersRouter.get('/:bloggerId', async (req: Request, res: Response) => {
     let foundBlogger = await bloggersService.findBloggerById(+req.params.bloggerId)
     if (foundBlogger) {
-        let blogger = {...foundBlogger}
-        //@ts-ignore
-        delete blogger._id
-        res.send(blogger)
+        res.send(foundBlogger)
     } else {
         res.send(404)
     }
@@ -46,10 +43,7 @@ bloggersRouter.post('/', async (req: Request, res: Response) => {
         res.status(400).send(error(errorMessages))
     } else {
         let newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
-        let createBlogger = {...newBlogger}
-        //@ts-ignore
-        delete createBlogger._id
-        res.status(201).send(createBlogger)
+        res.status(201).send(newBlogger)
     }
 })
 bloggersRouter.put('/:bloggerId', async (req: Request, res: Response) => {

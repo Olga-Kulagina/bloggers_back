@@ -9,7 +9,7 @@ export const postsService = {
     async findPostById(id: number): Promise<PostType | null> {
         return postsRepository.findPostById(id)
     },
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: number): Promise<PostType> {
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: number): Promise<PostType | null> {
         const blogger = await bloggersRepository.findBloggerById(bloggerId)
         let bloggerName
         if (blogger) {
@@ -26,7 +26,8 @@ export const postsService = {
             bloggerName: bloggerName,
         }
         const createdPost = await postsRepository.createPost(newPost)
-        return newPost
+        let post = await postsRepository.findPostById(createdPost.id)
+        return post
     },
     async updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number): Promise<boolean> {
         const blogger = await bloggersRepository.findBloggerById(bloggerId)

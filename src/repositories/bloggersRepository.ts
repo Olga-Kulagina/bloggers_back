@@ -1,4 +1,4 @@
-import {bloggersCollection, postsCollection} from "./db";
+import {bloggersCollection, db, postsCollection} from "./db";
 
 export type BloggerType = {
     id: number
@@ -7,15 +7,29 @@ export type BloggerType = {
 }
 
 export const bloggersRepository = {
-    async findBloggers(name: string | null | undefined): Promise<BloggerType[]> {
+    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: number , PageSize?: number): Promise<BloggerType[]> {
         const filter: any = {}
-        if (name) {
-            filter.name = {$regex: name}
+        if (SearchNameTerm) {
+            filter.name = {$regex: SearchNameTerm}
         }
-        return bloggersCollection.find(filter).toArray()
+        console.log(await bloggersCollection.count({}))
+        return bloggersCollection.find(filter, {projection: {_id: 0}}).toArray()
+        /*{
+            "pagesCount": 0,
+            "page": 0,
+            "pageSize": 0,
+            "totalCount": 0,
+            "items": [
+            {
+                "id": 0,
+                "name": "string",
+                "youtubeUrl": "string"
+            }
+        ]
+        }*/
     },
     async findBloggerById(id: number): Promise<BloggerType | null> {
-        let blogger = await bloggersCollection.findOne({id: id})
+        let blogger = await bloggersCollection.findOne({id: id}, {projection: {_id: 0}})
         return blogger
     },
     async createBlogger(newBlogger: BloggerType): Promise<BloggerType> {
