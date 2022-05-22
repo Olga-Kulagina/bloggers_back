@@ -3,6 +3,7 @@ import cors from 'cors'
 import {bloggersRouter} from "./routes/bloggersRouter";
 import {postsRouter} from "./routes/postsRouter";
 import {authMiddleware} from "./middlewares/authMiddleware";
+import {runDb} from "./repositories/db";
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -21,6 +22,11 @@ export const error = (errorMessages: Array<{ field: string, message: string }>) 
     }
 }
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+const startApp = async () => {
+    await runDb()
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`)
+    })
+}
+
+startApp()

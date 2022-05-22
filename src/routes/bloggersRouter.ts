@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
 import {error} from "../index";
+import {bloggersService} from "../domain/bloggersService";
 
 export const bloggersRouter = Router({})
 
@@ -11,8 +12,9 @@ export let bloggers = [
     {id: 5, name: 'Артемий Лебедев', youtubeUrl: 'https://www.youtube.com/user/temalebedev'},
 ]
 
-bloggersRouter.get('/', (req: Request, res: Response) => {
-    res.send(bloggers)
+bloggersRouter.get('/', async (req: Request, res: Response) => {
+    const foundBloggers = await bloggersService.findBloggers(req.query.name?.toString())
+    res.send(foundBloggers)
 })
 bloggersRouter.get('/:bloggerId', (req: Request, res: Response) => {
     const id = +req.params.bloggerId
