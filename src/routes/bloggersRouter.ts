@@ -13,7 +13,7 @@ export let bloggers = [
 ]
 
 bloggersRouter.get('/', async (req: Request, res: Response) => {
-    const foundBloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString())
+    const foundBloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString(), req.query.PageNumber?.toString(), req.query.PageSize?.toString())
     res.send(foundBloggers)
 })
 bloggersRouter.get('/:bloggerId', async (req: Request, res: Response) => {

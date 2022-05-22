@@ -6,27 +6,32 @@ export type BloggerType = {
     youtubeUrl: string
 }
 
+export type GetBloggerType = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: Array<BloggerType>
+}
+
 export const bloggersRepository = {
-    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: number , PageSize?: number): Promise<BloggerType[]> {
+    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetBloggerType> {
         const filter: any = {}
         if (SearchNameTerm) {
             filter.name = {$regex: SearchNameTerm}
         }
-        console.log(await bloggersCollection.count({}))
-        return bloggersCollection.find(filter, {projection: {_id: 0}}).toArray()
-        /*{
-            "pagesCount": 0,
-            "page": 0,
-            "pageSize": 0,
-            "totalCount": 0,
-            "items": [
-            {
-                "id": 0,
-                "name": "string",
-                "youtubeUrl": "string"
-            }
-        ]
-        }*/
+        let a = PageNumber || 1
+        let b = PageSize || 1
+        let totalCount = await bloggersCollection.count({})
+        let items = await bloggersCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+
+        return {
+            "pagesCount": Math.ceil(totalCount/+b),
+            "page": +a,
+            "pageSize": +b,
+            "totalCount": totalCount,
+            "items": items
+        }
     },
     async findBloggerById(id: number): Promise<BloggerType | null> {
         let blogger = await bloggersCollection.findOne({id: id}, {projection: {_id: 0}})

@@ -1,7 +1,7 @@
-import {bloggersRepository, BloggerType} from "../repositories/bloggersRepository";
+import {bloggersRepository, BloggerType, GetBloggerType} from "../repositories/bloggersRepository";
 
 export const bloggersService = {
-    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: number, PageSize?: number): Promise<BloggerType[]> {
+    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetBloggerType> {
         return bloggersRepository.findBloggers(SearchNameTerm, PageNumber, PageSize)
     },
     async findBloggerById(id: number): Promise<BloggerType | null> {
