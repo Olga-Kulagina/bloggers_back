@@ -1,6 +1,8 @@
 import {Request, Response, Router} from "express";
 import {error} from "../index";
 import {bloggers} from "./bloggersRouter";
+import {bloggersService} from "../domain/bloggersService";
+import {postsService} from "../domain/postsService";
 
 
 export const postsRouter = Router({})
@@ -48,24 +50,22 @@ let posts = [
     },
 ]
 
-postsRouter.get('/', (req: Request, res: Response) => {
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const posts = await postsService.findPosts(req.query.title?.toString())
     res.send(posts)
 })
-postsRouter.get('/:postId', (req: Request, res: Response) => {
-    const id = +req.params.postId
-    const isPostExist = posts.findIndex(p => p.id === id) !== -1
-    if (isPostExist) {
-        const post = posts.find(p => p.id === id)
-        res.send(post)
+postsRouter.get('/:postId', async (req: Request, res: Response) => {
+    let foundPost = await postsService.findPostById(+req.params.postId)
+    if (foundPost) {
+        res.send(foundPost)
     } else {
         res.send(404)
     }
 })
-postsRouter.post('/', (req: Request, res: Response) => {
+postsRouter.post('/', async (req: Request, res: Response) => {
     let errorMessages = []
     const id = +req.body.bloggerId
-    const bloggerIndex = bloggers.findIndex(b => b.id === id)
-    const isBloggerExist = bloggerIndex !== -1
+    const isBloggerExist = await bloggersService.findBloggerById(id)
     if (!isBloggerExist) {
         errorMessages.push({
             "message": "Некорректно указано bloggerId",
@@ -92,27 +92,19 @@ postsRouter.post('/', (req: Request, res: Response) => {
     }
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
+    } else {
+        const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+        res.status(201).send(newPost)
     }
-    const newPost = {
-        id: +(new Date()),
-        title: req.body.title,
-        shortDescription: req.body.shortDescription,
-        content: req.body.content,
-        bloggerId: +req.body.bloggerId,
-        bloggerName: bloggers[bloggerIndex].name,
-    }
-    posts.push(newPost)
-    res.status(201).send(newPost)
 })
-postsRouter.put('/:postId', (req: Request, res: Response) => {
+postsRouter.put('/:postId', async (req: Request, res: Response) => {
     let errorMessages = []
     const id = +req.params.postId
-    const isPostExist = posts.findIndex(p => p.id === id) !== -1
+    const isPostExist = await postsService.findPostById(id)
     if (!isPostExist) {
         res.send(404)
     }
-    const bloggerIndex = bloggers.findIndex(b => b.id === +req.body.bloggerId)
-    const isBloggerExist = bloggerIndex !== -1
+    const isBloggerExist = await bloggersService.findBloggerById(+req.body.bloggerId)
     if (!isBloggerExist) {
         errorMessages.push({
             "message": "Некорректно указано bloggerId",
@@ -139,23 +131,16 @@ postsRouter.put('/:postId', (req: Request, res: Response) => {
     }
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
+    } else {
+        let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+        res.send(204)
     }
-    posts = posts.map(p => p.id === id ? {
-        ...p,
-        title: req.body.title,
-        shortDescription: req.body.shortDescription,
-        content: req.body.content,
-        bloggerId: req.body.bloggerId,
-        bloggerName: bloggers[bloggerIndex].name,
-    } : p)
-    res.send(204)
 })
-postsRouter.delete('/:postId', (req: Request, res: Response) => {
+postsRouter.delete('/:postId', async (req: Request, res: Response) => {
     const id = +req.params.postId
-    const isPostExist = posts.findIndex(p => p.id === id) !== -1
+    const isPostExist = await postsService.findPostById(id)
     if (isPostExist) {
-        const index = posts.findIndex(p => p.id === id)
-        posts.splice(index, 1)
+        const result = await postsService.deletePost(id)
         res.send(204)
     } else {
         res.send(404)

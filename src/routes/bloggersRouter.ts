@@ -76,7 +76,7 @@ bloggersRouter.put('/:bloggerId', async (req: Request, res: Response) => {
 })
 bloggersRouter.delete('/:bloggerId', async (req: Request, res: Response) => {
     const id = +req.params.bloggerId
-    const isBloggerExist = await bloggersService.findBloggerById(+req.params.bloggerId)
+    const isBloggerExist = await bloggersService.findBloggerById(id)
     if (isBloggerExist) {
         const result = await bloggersService.deleteBlogger(id)
         res.send(204)
