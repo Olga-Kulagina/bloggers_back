@@ -109,37 +109,38 @@ postsRouter.put('/:postId', async (req: Request, res: Response) => {
     const isPostExist = await postsService.findPostById(id)
     if (!isPostExist) {
         res.send(404)
-    }
-    const isBloggerExist = await bloggersService.findBloggerById(+req.body.bloggerId)
-    if (!isBloggerExist) {
-        errorMessages.push({
-            "message": "Некорректно указано bloggerId",
-            "field": "bloggerId",
-        })
-    }
-    if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
-        errorMessages.push({
-            "message": "Некорректно указано title",
-            "field": "title",
-        })
-    }
-    if (!req.body.shortDescription || !req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
-        errorMessages.push({
-            "message": "Некорректно указано shortDescription",
-            "field": "shortDescription",
-        })
-    }
-    if (!req.body.content || !req.body.content.trim() || req.body.content.length > 1000) {
-        errorMessages.push({
-            "message": "Некорректно указано content",
-            "field": "content",
-        })
-    }
-    if (errorMessages.length > 0) {
-        res.status(400).send(error(errorMessages))
     } else {
-        let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
-        res.send(204)
+        const isBloggerExist = await bloggersService.findBloggerById(+req.body.bloggerId)
+        if (!isBloggerExist) {
+            errorMessages.push({
+                "message": "Некорректно указано bloggerId",
+                "field": "bloggerId",
+            })
+        }
+        if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
+            errorMessages.push({
+                "message": "Некорректно указано title",
+                "field": "title",
+            })
+        }
+        if (!req.body.shortDescription || !req.body.shortDescription.trim() || req.body.shortDescription.length > 100) {
+            errorMessages.push({
+                "message": "Некорректно указано shortDescription",
+                "field": "shortDescription",
+            })
+        }
+        if (!req.body.content || !req.body.content.trim() || req.body.content.length > 1000) {
+            errorMessages.push({
+                "message": "Некорректно указано content",
+                "field": "content",
+            })
+        }
+        if (errorMessages.length > 0) {
+            res.status(400).send(error(errorMessages))
+        } else {
+            let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+            res.send(204)
+        }
     }
 })
 postsRouter.delete('/:postId', async (req: Request, res: Response) => {
