@@ -22,14 +22,14 @@ export const bloggersRepository = {
         }
         let a = PageNumber || 1
         let b = PageSize || 10
-        let totalCount = await bloggersCollection.count({})
+        let bloggers = await bloggersCollection.find(filter, {projection: {_id: 0}}).toArray()
         let items = await bloggersCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
         return {
-            "pagesCount": Math.ceil(totalCount/+b),
+            "pagesCount": Math.ceil(bloggers.length/+b),
             "page": +a,
             "pageSize": +b,
-            "totalCount": totalCount,
+            "totalCount": bloggers.length,
             "items": items
         }
     },

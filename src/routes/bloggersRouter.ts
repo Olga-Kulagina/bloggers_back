@@ -1,6 +1,7 @@
 import {Request, Response, Router} from "express";
 import {error} from "../index";
 import {bloggersService} from "../domain/bloggersService";
+import {postsService} from "../domain/postsService";
 
 export const bloggersRouter = Router({})
 
@@ -23,6 +24,10 @@ bloggersRouter.get('/:bloggerId', async (req: Request, res: Response) => {
     } else {
         res.send(404)
     }
+})
+bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
+    let foundPosts = await postsService.findPostsByBloggerId(+req.params.bloggerId, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
+    res.send(foundPosts)
 })
 bloggersRouter.post('/', async (req: Request, res: Response) => {
     let errorMessages = []

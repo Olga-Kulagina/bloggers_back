@@ -1,5 +1,6 @@
 import {bloggersCollection, postsCollection} from "./db";
 import {BloggerType} from "./bloggersRepository";
+import {log} from "util";
 
 export type PostType = {
     id: number
@@ -28,6 +29,20 @@ export const postsRepository = {
         let b = PageSize || 10
         let totalCount = await postsCollection.count({})
         let items = await postsCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+
+        return {
+            "pagesCount": Math.ceil(totalCount/+b),
+            "page": +a,
+            "pageSize": +b,
+            "totalCount": totalCount,
+            "items": items
+        }
+    },
+    async findPostsByBloggerId(id: number, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
+        let a = PageNumber || 1
+        let b = PageSize || 10
+        let totalCount = await postsCollection.count({bloggerId: id})
+        let items = await postsCollection.find({bloggerId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
         return {
             "pagesCount": Math.ceil(totalCount/+b),

@@ -47,5 +47,8 @@ export const postsService = {
    async deleteAllPosts(): Promise<boolean> {
        const result = await postsRepository.deletePost()
        return result
+   },
+   async findPostsByBloggerId(id: number, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
+       return await postsRepository.findPostsByBloggerId(id, PageNumber, PageSize)
    }
 }
