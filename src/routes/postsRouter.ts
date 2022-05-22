@@ -57,7 +57,10 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 postsRouter.get('/:postId', async (req: Request, res: Response) => {
     let foundPost = await postsService.findPostById(+req.params.postId)
     if (foundPost) {
-        res.send(foundPost)
+        let post = {...foundPost}
+        //@ts-ignore
+        delete post._id
+        res.send(post)
     } else {
         res.send(404)
     }
@@ -94,10 +97,10 @@ postsRouter.post('/', async (req: Request, res: Response) => {
         res.status(400).send(error(errorMessages))
     } else {
         let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
-        newPost = {...newPost}
+        let createdPost = {...newPost}
         //@ts-ignore
-        delete newPost._id
-        res.status(201).send(newPost)
+        delete createdPost._id
+        res.status(201).send(createdPost)
     }
 })
 postsRouter.put('/:postId', async (req: Request, res: Response) => {
