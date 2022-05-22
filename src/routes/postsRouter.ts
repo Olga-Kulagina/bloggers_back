@@ -93,7 +93,10 @@ postsRouter.post('/', async (req: Request, res: Response) => {
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+        let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+        newPost = {...newPost}
+        //@ts-ignore
+        delete newPost._id
         res.status(201).send(newPost)
     }
 })

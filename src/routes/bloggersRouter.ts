@@ -42,7 +42,10 @@ bloggersRouter.post('/', async (req: Request, res: Response) => {
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        const newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
+        let newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
+        newBlogger = {...newBlogger}
+        //@ts-ignore
+        delete newBlogger._id
         res.status(201).send(newBlogger)
     }
 })
