@@ -146,3 +146,8 @@ postsRouter.delete('/:postId', async (req: Request, res: Response) => {
         res.send(404)
     }
 })
+
+postsRouter.delete('/', async (req: Request, res: Response) => {
+        const result = await postsService.deleteAllPosts()
+        res.send(204)
+})

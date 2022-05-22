@@ -23,5 +23,9 @@ export const bloggersService = {
     async deleteBlogger(id: number): Promise<boolean> {
         const result = await bloggersRepository.deleteBlogger(id)
         return result
+    },
+    async deleteAllBloggers(): Promise<boolean> {
+        const result = await bloggersRepository.deleteBlogger()
+        return result
     }
 }

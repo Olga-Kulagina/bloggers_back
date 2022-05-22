@@ -1,4 +1,4 @@
-import {bloggersCollection} from "./db";
+import {bloggersCollection, postsCollection} from "./db";
 
 export type BloggerType = {
     id: number
@@ -26,8 +26,13 @@ export const bloggersRepository = {
         const result = await bloggersCollection.updateOne({id: id}, {$set: {name: name, youtubeUrl: youtubeUrl}})
         return result.matchedCount === 1
     },
-    async deleteBlogger(id: number): Promise<boolean> {
-        let result = await bloggersCollection.deleteOne({id: id})
+    async deleteBlogger(id?: number): Promise<boolean> {
+        let result
+        if (id) {
+            result = await bloggersCollection.deleteOne({id: id})
+        } else {
+            result = await bloggersCollection.deleteMany({})
+        }
         return result.deletedCount === 1
     }
 }
