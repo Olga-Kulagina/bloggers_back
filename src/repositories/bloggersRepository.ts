@@ -21,7 +21,7 @@ export const bloggersRepository = {
             filter.name = {$regex: SearchNameTerm}
         }
         let a = PageNumber || 1
-        let b = PageSize || 1
+        let b = PageSize || 10
         let totalCount = await bloggersCollection.count({})
         let items = await bloggersCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 

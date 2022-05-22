@@ -1,4 +1,5 @@
-import {postsCollection} from "./db";
+import {bloggersCollection, postsCollection} from "./db";
+import {BloggerType} from "./bloggersRepository";
 
 export type PostType = {
     id: number
@@ -9,13 +10,32 @@ export type PostType = {
     bloggerName: string
 }
 
+export type GetPostType = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: Array<PostType>
+}
+
 export const postsRepository = {
-    async findPosts(title: string | null | undefined): Promise<PostType[]> {
+    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
         const filter: any = {}
         if (title) {
             filter.name = {$regex: title}
         }
-        return postsCollection.find(filter, {projection: {_id: 0}}).toArray()
+        let a = PageNumber || 1
+        let b = PageSize || 10
+        let totalCount = await postsCollection.count({})
+        let items = await postsCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+
+        return {
+            "pagesCount": Math.ceil(totalCount/+b),
+            "page": +a,
+            "pageSize": +b,
+            "totalCount": totalCount,
+            "items": items
+        }
     },
     async findPostById(id: number): Promise<PostType | null> {
         let post = await postsCollection.findOne({id: id}, {projection: {_id: 0}})

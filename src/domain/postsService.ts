@@ -1,10 +1,10 @@
-import {postsRepository, PostType} from "../repositories/postsRepository";
+import {GetPostType, postsRepository, PostType} from "../repositories/postsRepository";
 import {bloggers} from "../routes/bloggersRouter";
 import {bloggersRepository, BloggerType} from "../repositories/bloggersRepository";
 
 export const postsService = {
-    async findPosts(title: string | null | undefined): Promise<PostType[]> {
-        return postsRepository.findPosts(title)
+    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
+        return postsRepository.findPosts(title, PageNumber, PageSize)
     },
     async findPostById(id: number): Promise<PostType | null> {
         return postsRepository.findPostById(id)
