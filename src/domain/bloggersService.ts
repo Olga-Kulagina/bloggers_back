@@ -4,16 +4,24 @@ export const bloggersService = {
     async findBloggers(name: string | null | undefined): Promise<BloggerType[]> {
         return bloggersRepository.findBloggers(name)
     },
-    async findBloggerById(): Promise<BloggerType | null> {
-        return null
+    async findBloggerById(id: number): Promise<BloggerType | null> {
+        return bloggersRepository.findBloggerById(id)
     },
-    async createBlogger(): Promise<BloggerType> {
-        return {id: 1, name: 'IT-KAMASUTRA', youtubeUrl: 'https://www.youtube.com/channel/UCTW0FUhT0m-Bqg2trTbSs0g'}
+    async createBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
+        const newBlogger = {
+            id: +(new Date()),
+            name: name,
+            youtubeUrl: youtubeUrl,
+        }
+        const createdBlogger = await bloggersRepository.createBlogger(newBlogger)
+        return createdBlogger
     },
-    async updateBlogger(): Promise<boolean> {
-        return true
+    async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+        const result = await bloggersRepository.updateBlogger(id, name, youtubeUrl)
+        return result
     },
-    async deleteBlogger(): Promise<boolean> {
-        return true
+    async deleteBlogger(id: number): Promise<boolean> {
+        const result = await bloggersRepository.deleteBlogger(id)
+        return result
     }
 }

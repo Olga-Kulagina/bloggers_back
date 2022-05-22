@@ -14,21 +14,20 @@ export const bloggersRepository = {
         }
         return bloggersCollection.find(filter).toArray()
     },
-    /*async findProductById(id: number): Promise<ProductType | null> {
-        let product = await productsCollection.findOne({id: id})
-        return product
+    async findBloggerById(id: number): Promise<BloggerType | null> {
+        let blogger = await bloggersCollection.findOne({id: id})
+        return blogger
     },
-    async createProduct(newProduct: ProductType): Promise<ProductType> {
-        const result = await productsCollection.insertOne(newProduct)
-        return newProduct
+    async createBlogger(newBlogger: BloggerType): Promise<BloggerType> {
+        const result = await bloggersCollection.insertOne(newBlogger)
+        return newBlogger
     },
-    async updateProduct(id: number, title: string): Promise<boolean> {
-        const result = await productsCollection.updateOne({id: id}, {$set: {title: title}})
-
+    async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+        const result = await bloggersCollection.updateOne({id: id}, {$set: {name: name, youtubeUrl: youtubeUrl}})
         return result.matchedCount === 1
     },
-    async deleteProduct(id: number): Promise<boolean> {
-        let result = await productsCollection.deleteOne({id: id})
+    async deleteBlogger(id: number): Promise<boolean> {
+        let result = await bloggersCollection.deleteOne({id: id})
         return result.deletedCount === 1
-    }*/
+    }
 }
