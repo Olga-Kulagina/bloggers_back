@@ -38,10 +38,7 @@ bloggersRouter.post('/:bloggerId/posts', async (req: Request, res: Response) => 
     const id = +req.params.bloggerId
     const isBloggerExist = await bloggersService.findBloggerById(id)
     if (!isBloggerExist) {
-        errorMessages.push({
-            "message": "Некорректно указано bloggerId",
-            "field": "bloggerId",
-        })
+        res.send(404)
     }
     if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
         errorMessages.push({
