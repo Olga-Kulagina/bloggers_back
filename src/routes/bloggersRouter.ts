@@ -27,7 +27,11 @@ bloggersRouter.get('/:bloggerId', async (req: Request, res: Response) => {
 })
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
     let foundPosts = await postsService.findPostsByBloggerId(+req.params.bloggerId, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
-    res.send(foundPosts)
+    if (foundPosts) {
+        res.send(foundPosts)
+    } else {
+        res.send(404)
+    }
 })
 bloggersRouter.post('/', async (req: Request, res: Response) => {
     let errorMessages = []

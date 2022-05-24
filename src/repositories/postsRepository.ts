@@ -38,19 +38,24 @@ export const postsRepository = {
             "items": items
         }
     },
-    async findPostsByBloggerId(id: number, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
+    async findPostsByBloggerId(id: number, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType | null> {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({bloggerId: id})
         let items = await postsCollection.find({bloggerId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
-        return {
-            "pagesCount": Math.ceil(totalCount/+b),
-            "page": +a,
-            "pageSize": +b,
-            "totalCount": totalCount,
-            "items": items
+        if (items.length > 0) {
+            return {
+                "pagesCount": Math.ceil(totalCount/+b),
+                "page": +a,
+                "pageSize": +b,
+                "totalCount": totalCount,
+                "items": items
+            }
+        } else {
+            return null
         }
+
     },
     async findPostById(id: number): Promise<PostType | null> {
         let post = await postsCollection.findOne({id: id}, {projection: {_id: 0}})
