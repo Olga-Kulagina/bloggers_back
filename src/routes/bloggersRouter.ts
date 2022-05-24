@@ -38,7 +38,10 @@ bloggersRouter.post('/:bloggerId/posts', async (req: Request, res: Response) => 
     const id = +req.params.bloggerId
     const isBloggerExist = await bloggersService.findBloggerById(id)
     if (!isBloggerExist) {
-        res.send(404)
+        errorMessages.push({
+            "message": "Некорректно указано bloggerId",
+            "field": "bloggerId",
+        })
     }
     if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
         errorMessages.push({
@@ -59,7 +62,7 @@ bloggersRouter.post('/:bloggerId/posts', async (req: Request, res: Response) => 
         })
     }
     if (errorMessages.length > 0) {
-        res.status(400).send(error(errorMessages))
+        res.status(404).send(error(errorMessages))
     } else {
         let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, id)
         res.status(201).send(newPost)
