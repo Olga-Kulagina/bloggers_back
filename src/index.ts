@@ -4,6 +4,7 @@ import {bloggersRouter} from "./routes/bloggersRouter";
 import {postsRouter} from "./routes/postsRouter";
 import {authMiddleware} from "./middlewares/authMiddleware";
 import {runDb} from "./repositories/db";
+import {usersRouter} from "./routes/usersRouter";
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -14,6 +15,7 @@ app.use(authMiddleware)
 
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
+app.use('/users', usersRouter)
 
 export const error = (errorMessages: Array<{ field: string, message: string }>) => {
     return {
