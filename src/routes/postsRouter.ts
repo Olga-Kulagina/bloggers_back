@@ -55,7 +55,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     res.send(posts)
 })
 postsRouter.get('/:postId', async (req: Request, res: Response) => {
-    let foundPost = await postsService.findPostById(+req.params.postId)
+    let foundPost = await postsService.findPostById(req.params.postId)
     if (foundPost) {
         res.send(foundPost)
     } else {
@@ -64,7 +64,7 @@ postsRouter.get('/:postId', async (req: Request, res: Response) => {
 })
 postsRouter.post('/', async (req: Request, res: Response) => {
     let errorMessages = []
-    const id = +req.body.bloggerId
+    const id = req.body.bloggerId
     const isBloggerExist = await bloggersService.findBloggerById(id)
     if (!isBloggerExist) {
         errorMessages.push({
@@ -93,18 +93,18 @@ postsRouter.post('/', async (req: Request, res: Response) => {
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+        let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
         res.status(201).send(newPost)
     }
 })
 postsRouter.put('/:postId', async (req: Request, res: Response) => {
     let errorMessages = []
-    const id = +req.params.postId
+    const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
     if (!isPostExist) {
         res.send(404)
     } else {
-        const isBloggerExist = await bloggersService.findBloggerById(+req.body.bloggerId)
+        const isBloggerExist = await bloggersService.findBloggerById(req.body.bloggerId)
         if (!isBloggerExist) {
             errorMessages.push({
                 "message": "Некорректно указано bloggerId",
@@ -132,13 +132,13 @@ postsRouter.put('/:postId', async (req: Request, res: Response) => {
         if (errorMessages.length > 0) {
             res.status(400).send(error(errorMessages))
         } else {
-            let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, +req.body.bloggerId)
+            let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
             res.send(204)
         }
     }
 })
 postsRouter.delete('/:postId', async (req: Request, res: Response) => {
-    const id = +req.params.postId
+    const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
     if (isPostExist) {
         const result = await postsService.deletePost(id)

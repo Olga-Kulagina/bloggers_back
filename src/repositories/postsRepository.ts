@@ -3,11 +3,11 @@ import {BloggerType} from "./bloggersRepository";
 import {log} from "util";
 
 export type PostType = {
-    id: number
+    id: string
     title: string
     shortDescription: string
     content: string
-    bloggerId: number
+    bloggerId: string
     bloggerName: string
 }
 
@@ -38,7 +38,7 @@ export const postsRepository = {
             "items": items
         }
     },
-    async findPostsByBloggerId(id: number, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType | null> {
+    async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType | null> {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({bloggerId: id})
@@ -57,7 +57,7 @@ export const postsRepository = {
         }
 
     },
-    async findPostById(id: number): Promise<PostType | null> {
+    async findPostById(id: string): Promise<PostType | null> {
         let post = await postsCollection.findOne({id: id}, {projection: {_id: 0}})
         return post
     },
@@ -65,11 +65,11 @@ export const postsRepository = {
         const result = await postsCollection.insertOne(newPost)
         return newPost
     },
-    async updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number, bloggerName: string): Promise<boolean> {
+    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string): Promise<boolean> {
         const result = await postsCollection.updateOne({id: id}, {$set: {title: title, shortDescription: shortDescription, content: content, bloggerId: bloggerId, bloggerName: bloggerName}})
         return result.matchedCount === 1
     },
-    async deletePost(id?: number): Promise<boolean> {
+    async deletePost(id?: string): Promise<boolean> {
         let result
         if (id) {
             result = await postsCollection.deleteOne({id: id})

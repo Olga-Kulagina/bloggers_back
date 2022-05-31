@@ -1,7 +1,7 @@
 import {bloggersCollection, db, postsCollection} from "./db";
 
 export type BloggerType = {
-    id: number
+    id: string
     name: string
     youtubeUrl: string
 }
@@ -33,7 +33,7 @@ export const bloggersRepository = {
             "items": items
         }
     },
-    async findBloggerById(id: number): Promise<BloggerType | null> {
+    async findBloggerById(id: string): Promise<BloggerType | null> {
         let blogger = await bloggersCollection.findOne({id: id}, {projection: {_id: 0}})
         return blogger
     },
@@ -41,11 +41,11 @@ export const bloggersRepository = {
         const result = await bloggersCollection.insertOne(newBlogger)
         return newBlogger
     },
-    async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+    async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         const result = await bloggersCollection.updateOne({id: id}, {$set: {name: name, youtubeUrl: youtubeUrl}})
         return result.matchedCount === 1
     },
-    async deleteBlogger(id?: number): Promise<boolean> {
+    async deleteBlogger(id?: string): Promise<boolean> {
         let result
         if (id) {
             result = await bloggersCollection.deleteOne({id: id})
