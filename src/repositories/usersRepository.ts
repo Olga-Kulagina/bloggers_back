@@ -1,5 +1,6 @@
 import {bloggersCollection, usersCollection} from "./db";
 import {BloggerType} from "./bloggersRepository";
+import {UserDBType} from "./types";
 
 export type UserType = {
     id: string
@@ -30,7 +31,7 @@ export const usersRepository = {
             let b = +PageSize !== null ? +PageSize : 10
         }
         let users = await usersCollection.find({}, {projection: {_id: 0}}).toArray()
-        let items = await usersCollection.find({}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        let items = await usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
         return {
             "pagesCount": Math.ceil(users.length/+b),
@@ -44,10 +45,18 @@ export const usersRepository = {
         let user = await usersCollection.findOne({id: id}, {projection: {_id: 0}})
         return user
     },
-    async createUser(newUser: PostUserType): Promise<PostUserType> {
+    /*async findUserByLogin(login: string): Promise<UserDBType | null> {
+        let user = await usersCollection.findOne({login: login}, {projection: {_id: 0}})
+        return user
+    },*/
+    async createUser(newUser: UserDBType): Promise<UserDBType> {
         const result = await usersCollection.insertOne(newUser)
         return newUser
     },
+    /*async create(user: AdminDBType): Promise<AdminDBType> {
+        const result = await adminsCollection.insertOne(user)
+        return user
+    },*/
     async deleteUser(id?: string): Promise<boolean> {
         let result
         if (id) {

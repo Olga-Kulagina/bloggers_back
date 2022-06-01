@@ -1,5 +1,7 @@
-import {bloggersRepository, BloggerType, GetBloggerType} from "../repositories/bloggersRepository";
 import {GetUserType, usersRepository, UserType} from "../repositories/usersRepository";
+import {UserDBType} from "../repositories/types";
+import {authService} from "./authService";
+import {ObjectId} from "mongodb";
 
 
 export const usersService = {
@@ -10,10 +12,13 @@ export const usersService = {
         return usersRepository.findUserById(id)
     },
     async createUser(login: string, password: string): Promise<UserType | null> {
-        const newUser = {
+        const passwordHash = await authService.generateHash(password)
+        const newUser: UserDBType = {
+            _id: new ObjectId(),
             id: `${+(new Date())}`,
-            login: login,
-            password: password,
+            login,
+            passwordHash,
+            createdAt: new Date()
         }
         const createdUser = await usersRepository.createUser(newUser)
         let user = {id: createdUser.id, login: createdUser.login}
