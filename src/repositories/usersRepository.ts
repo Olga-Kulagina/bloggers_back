@@ -25,7 +25,7 @@ export const usersRepository = {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await usersCollection.count({})
-        let items = await usersCollection.find({}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        let items = await usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
         return {
             "pagesCount": Math.ceil(totalCount/+b),
