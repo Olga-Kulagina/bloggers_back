@@ -3,7 +3,8 @@ import {error} from "../index";
 import {bloggers} from "./bloggersRouter";
 import {bloggersService} from "../domain/bloggersService";
 import {postsService} from "../domain/postsService";
-import {authMiddleware} from "../middlewares/authMiddleware";
+import {authBasicMiddleware} from "../middlewares/authBasicMiddleware";
+import {authBearerMiddleware} from "../middlewares/authBearerMiddleware";
 
 
 export const postsRouter = Router({})
@@ -63,7 +64,7 @@ postsRouter.get('/:postId', async (req: Request, res: Response) => {
         res.send(404)
     }
 })
-postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
+postsRouter.post('/', authBasicMiddleware, async (req: Request, res: Response) => {
     let errorMessages = []
     const id = req.body.bloggerId
     const isBloggerExist = await bloggersService.findBloggerById(id)
@@ -98,7 +99,7 @@ postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
         res.status(201).send(newPost)
     }
 })
-postsRouter.put('/:postId', authMiddleware, async (req: Request, res: Response) => {
+postsRouter.put('/:postId', authBasicMiddleware, async (req: Request, res: Response) => {
     let errorMessages = []
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
@@ -138,7 +139,7 @@ postsRouter.put('/:postId', authMiddleware, async (req: Request, res: Response) 
         }
     }
 })
-postsRouter.delete('/:postId', authMiddleware, async (req: Request, res: Response) => {
+postsRouter.delete('/:postId', authBasicMiddleware, async (req: Request, res: Response) => {
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
     if (isPostExist) {
@@ -148,8 +149,31 @@ postsRouter.delete('/:postId', authMiddleware, async (req: Request, res: Respons
         res.send(404)
     }
 })
-
-postsRouter.delete('/', authMiddleware, async (req: Request, res: Response) => {
+postsRouter.delete('/', authBasicMiddleware, async (req: Request, res: Response) => {
         const result = await postsService.deleteAllPosts()
         res.send(204)
+})
+
+postsRouter.post('/:postId/comments', authBearerMiddleware, async (req: Request, res: Response) => {
+    let errorMessages = []
+    const id = req.params.postId
+    const isPostExist = await postsService.findPostById(id)
+    if (!isPostExist) {
+        errorMessages.push({
+            "message": "Некорректно указано postId",
+            "field": "postId",
+        })
+    }
+    if (!req.body.content || !req.body.content.trim() || req.body.content.length > 300 || req.body.content.length < 20) {
+        errorMessages.push({
+            "message": "Некорректно указано content",
+            "field": "content",
+        })
+    }
+    if (errorMessages.length > 0) {
+        res.status(400).send(error(errorMessages))
+    } else {
+        let newComment = await postsService.createComment(req.body.content, req.user)
+        res.status(201).send(newComment)
+    }
 })

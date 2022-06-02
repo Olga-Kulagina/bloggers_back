@@ -3,12 +3,14 @@ import {BloggerType} from "./bloggersRepository";
 import {PostType} from "./postsRepository";
 import {settings} from "../settings";
 import {UserDBType} from "./types";
+import {CommentType} from "./commentsRepository";
 
 export const client = new MongoClient(settings.MONGO_URI)
 export const db = client.db("youtube")
 export const bloggersCollection = db.collection<BloggerType>("bloggers")
 export const postsCollection = db.collection<PostType>("posts")
 export const usersCollection = db.collection<UserDBType>("users")
+export const commentsCollection = db.collection<CommentType>("comments")
 
 export async function runDb() {
     try {

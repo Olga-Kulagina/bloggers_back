@@ -1,6 +1,9 @@
 import {GetPostType, postsRepository, PostType} from "../repositories/postsRepository";
 import {bloggers} from "../routes/bloggersRouter";
 import {bloggersRepository, BloggerType} from "../repositories/bloggersRepository";
+import {commentsRepository, CommentType} from "../repositories/commentsRepository";
+import { formatISO } from 'date-fns'
+import {UserDBType} from "../repositories/types";
 
 export const postsService = {
     async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
@@ -28,6 +31,19 @@ export const postsService = {
         const createdPost = await postsRepository.createPost(newPost)
         let post = await postsRepository.findPostById(createdPost.id)
         return post
+    },
+    async createComment(content: string, user: UserDBType): Promise<CommentType | null> {
+        const newComment = {
+            id: `${+(new Date())}`,
+            content,
+            userId: user.id,
+            userLogin: user.login,
+            addedAt: formatISO(Date.now()),
+        }
+
+        const createdComment = await commentsRepository.createComment(newComment)
+        let comment = await commentsRepository.findCommentById(createdComment.id)
+        return comment
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
         const blogger = await bloggersRepository.findBloggerById(bloggerId)

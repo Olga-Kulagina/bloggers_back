@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express'
 import cors from 'cors'
 import {bloggersRouter} from "./routes/bloggersRouter";
 import {postsRouter} from "./routes/postsRouter";
-import {authMiddleware} from "./middlewares/authMiddleware";
+import {authBasicMiddleware} from "./middlewares/authBasicMiddleware";
 import {runDb} from "./repositories/db";
 import {usersRouter} from "./routes/usersRouter";
 import {authRouter} from "./routes/authRouter";

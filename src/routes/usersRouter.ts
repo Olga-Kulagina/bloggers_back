@@ -1,11 +1,11 @@
 import {Request, Response, Router} from "express";
 import {usersService} from "../domain/usersService";
 import {error} from "../index";
-import {authMiddleware} from "../middlewares/authMiddleware";
+import {authBasicMiddleware} from "../middlewares/authBasicMiddleware";
 
 
 export const usersRouter = Router({})
-usersRouter.use(authMiddleware)
+usersRouter.use(authBasicMiddleware)
 
 usersRouter.get('/', async (req: Request, res: Response) => {
     const foundUsers = await usersService.findUsers(req.query.PageNumber?.toString(), req.query.PageSize?.toString())

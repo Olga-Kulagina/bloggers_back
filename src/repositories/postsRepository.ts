@@ -1,6 +1,4 @@
-import {bloggersCollection, postsCollection} from "./db";
-import {BloggerType} from "./bloggersRepository";
-import {log} from "util";
+import {postsCollection} from "./db";
 
 export type PostType = {
     id: string
