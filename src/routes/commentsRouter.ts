@@ -44,6 +44,10 @@ commentsRouter.delete('/:commentId', authBearerMiddleware, async (req: Request, 
     const id = req.params.commentId
     const isCommentExist = await commentsService.findCommentById(id)
     if (isCommentExist) {
+        if (req.user.id !== isCommentExist.userId) {
+            res.send(403)
+            return
+        }
         const result = await commentsService.deleteComment(id)
         res.send(204)
     } else {
