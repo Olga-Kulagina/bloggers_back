@@ -33,7 +33,7 @@ commentsRouter.put('/:commentId', authBearerMiddleware, async (req: Request, res
             })
         }
         if (errorMessages.length > 0) {
-            res.status(400).send(error(errorMessages))
+            res.status(404).send(error(errorMessages))
         } else {
             let result = await commentsService.updateComment(id, req.body.content)
             res.send(204)
@@ -41,7 +41,7 @@ commentsRouter.put('/:commentId', authBearerMiddleware, async (req: Request, res
     }
 })
 commentsRouter.delete('/:commentId', authBearerMiddleware, async (req: Request, res: Response) => {
-    const id = req.params.postId
+    const id = req.params.commentId
     const isCommentExist = await commentsService.findCommentById(id)
     if (isCommentExist) {
         const result = await commentsService.deleteComment(id)
