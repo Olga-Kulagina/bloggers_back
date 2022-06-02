@@ -171,7 +171,7 @@ postsRouter.post('/:postId/comments', authBearerMiddleware, async (req: Request,
         })
     }
     if (errorMessages.length > 0) {
-        res.status(404).send(error(errorMessages))
+        res.status(400).send(error(errorMessages))
     } else {
         let newComment = await commentsService.createComment(id, req.body.content, req.user)
         res.status(201).send(newComment)
@@ -189,7 +189,7 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
         })
     }
     if (errorMessages.length > 0) {
-        res.status(400).send(error(errorMessages))
+        res.status(404).send(error(errorMessages))
     } else {
         const foundComments = await commentsService.findCommentsByPostId(id, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
         res.send(foundComments)
