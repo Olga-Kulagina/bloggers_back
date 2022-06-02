@@ -1,6 +1,4 @@
 import {Request, Response, Router} from "express";
-import {bloggersService} from "../domain/bloggersService";
-import {bloggersRouter} from "./bloggersRouter";
 import {usersService} from "../domain/usersService";
 import {error} from "../index";
 import {authMiddleware} from "../middlewares/authMiddleware";
