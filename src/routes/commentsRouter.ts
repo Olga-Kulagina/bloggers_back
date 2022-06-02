@@ -19,7 +19,7 @@ commentsRouter.put('/:commentId', authBearerMiddleware, async (req: Request, res
     let errorMessages = []
     const id = req.params.commentId
     const isCommentExist = await commentsService.findCommentById(id)
-    if (isCommentExist && req.user.id === isCommentExist.userId) {
+    if (isCommentExist && req.user.id !== isCommentExist.userId) {
         res.send(403)
         return
     }
