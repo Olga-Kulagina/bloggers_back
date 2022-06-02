@@ -180,7 +180,7 @@ postsRouter.post('/:postId/comments', authBearerMiddleware, async (req: Request,
     }
 })
 
-postsRouter.get('/:postId/comments', authBearerMiddleware, async (req: Request, res: Response) => {
+postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     let errorMessages = []
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
