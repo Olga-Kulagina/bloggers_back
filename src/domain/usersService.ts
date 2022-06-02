@@ -11,6 +11,9 @@ export const usersService = {
     async findUserById(id: string): Promise<UserType | null> {
         return usersRepository.findUserById(id)
     },
+    async findUserByLogin(login: string): Promise<UserDBType | null> {
+        return usersRepository.findByLogin(login)
+    },
     async createUser(login: string, password: string): Promise<UserType | null> {
         const passwordHash = await authService.generateHash(password)
         const newUser: UserDBType = {

@@ -3,6 +3,7 @@ import {error} from "../index";
 import {bloggers} from "./bloggersRouter";
 import {bloggersService} from "../domain/bloggersService";
 import {postsService} from "../domain/postsService";
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 
 export const postsRouter = Router({})
@@ -62,7 +63,7 @@ postsRouter.get('/:postId', async (req: Request, res: Response) => {
         res.send(404)
     }
 })
-postsRouter.post('/', async (req: Request, res: Response) => {
+postsRouter.post('/', authMiddleware, async (req: Request, res: Response) => {
     let errorMessages = []
     const id = req.body.bloggerId
     const isBloggerExist = await bloggersService.findBloggerById(id)
@@ -97,7 +98,7 @@ postsRouter.post('/', async (req: Request, res: Response) => {
         res.status(201).send(newPost)
     }
 })
-postsRouter.put('/:postId', async (req: Request, res: Response) => {
+postsRouter.put('/:postId', authMiddleware, async (req: Request, res: Response) => {
     let errorMessages = []
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
@@ -137,7 +138,7 @@ postsRouter.put('/:postId', async (req: Request, res: Response) => {
         }
     }
 })
-postsRouter.delete('/:postId', async (req: Request, res: Response) => {
+postsRouter.delete('/:postId', authMiddleware, async (req: Request, res: Response) => {
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
     if (isPostExist) {
@@ -148,7 +149,7 @@ postsRouter.delete('/:postId', async (req: Request, res: Response) => {
     }
 })
 
-postsRouter.delete('/', async (req: Request, res: Response) => {
+postsRouter.delete('/', authMiddleware, async (req: Request, res: Response) => {
         const result = await postsService.deleteAllPosts()
         res.send(204)
 })

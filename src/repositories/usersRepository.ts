@@ -6,11 +6,6 @@ export type UserType = {
     id: string
     login: string
 }
-export type PostUserType = {
-    id: string
-    login: string
-    password: string
-}
 
 export type GetUserType = {
     pagesCount: number
@@ -37,6 +32,10 @@ export const usersRepository = {
     },
     async findUserById(id: string): Promise<UserType | null> {
         let user = await usersCollection.findOne({id: id}, {projection: {_id: 0}})
+        return user
+    },
+    async findByLogin(login: string): Promise<UserDBType | null> {
+        let user = await usersCollection.findOne({login: login}, {projection: {_id: 0}})
         return user
     },
     async createUser(newUser: UserDBType): Promise<UserDBType> {

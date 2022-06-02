@@ -2,8 +2,10 @@ import {Request, Response, Router} from "express";
 import {error} from "../index";
 import {bloggersService} from "../domain/bloggersService";
 import {postsService} from "../domain/postsService";
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 export const bloggersRouter = Router({})
+bloggersRouter.use(authMiddleware)
 
 export let bloggers = [
     {id: 1, name: 'IT-KAMASUTRA', youtubeUrl: 'https://www.youtube.com/channel/UCTW0FUhT0m-Bqg2trTbSs0g'},

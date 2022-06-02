@@ -3,9 +3,11 @@ import {bloggersService} from "../domain/bloggersService";
 import {bloggersRouter} from "./bloggersRouter";
 import {usersService} from "../domain/usersService";
 import {error} from "../index";
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 
 export const usersRouter = Router({})
+usersRouter.use(authMiddleware)
 
 usersRouter.get('/', async (req: Request, res: Response) => {
     const foundUsers = await usersService.findUsers(req.query.PageNumber?.toString(), req.query.PageSize?.toString())
