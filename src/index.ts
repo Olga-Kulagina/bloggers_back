@@ -17,6 +17,7 @@ app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
+app.use('/comments', usersRouter)
 
 export const error = (errorMessages: Array<{ field: string, message: string }>) => {
     return {

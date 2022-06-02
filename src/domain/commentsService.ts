@@ -22,4 +22,7 @@ export const commentsService = {
     async findCommentsByPostId(id: string, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetCommentsType | null> {
         return commentsRepository.findComments(id, PageNumber, PageSize)
     },
+    async findCommentByPostId(id: string): Promise<CommentType | null> {
+        return commentsRepository.findCommentById(id)
+    },
 }
