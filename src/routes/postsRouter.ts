@@ -161,10 +161,8 @@ postsRouter.post('/:postId/comments', authBearerMiddleware, async (req: Request,
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
     if (!isPostExist) {
-        errorMessages.push({
-            "message": "Некорректно указано postId",
-            "field": "postId",
-        })
+        res.send(404)
+        return
     }
     if (!req.body.content || !req.body.content.trim() || req.body.content.length > 300 || req.body.content.length < 20) {
         errorMessages.push({

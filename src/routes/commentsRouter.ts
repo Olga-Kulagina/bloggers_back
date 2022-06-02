@@ -1,10 +1,6 @@
 import {Request, Response, Router} from "express";
 import {commentsService} from "../domain/commentsService";
-import {authBasicMiddleware} from "../middlewares/authBasicMiddleware";
-import {postsService} from "../domain/postsService";
-import {bloggersService} from "../domain/bloggersService";
 import {error} from "../index";
-import {postsRouter} from "./postsRouter";
 import {authBearerMiddleware} from "../middlewares/authBearerMiddleware";
 
 
@@ -23,6 +19,10 @@ commentsRouter.put('/:commentId', authBearerMiddleware, async (req: Request, res
     let errorMessages = []
     const id = req.params.commentId
     const isCommentExist = await commentsService.findCommentById(id)
+    if (isCommentExist && req.user.id === isCommentExist.userId) {
+        res.send(403)
+        return
+    }
     if (!isCommentExist) {
         res.send(404)
     } else {
@@ -33,7 +33,7 @@ commentsRouter.put('/:commentId', authBearerMiddleware, async (req: Request, res
             })
         }
         if (errorMessages.length > 0) {
-            res.status(404).send(error(errorMessages))
+            res.status(400).send(error(errorMessages))
         } else {
             let result = await commentsService.updateComment(id, req.body.content)
             res.send(204)
