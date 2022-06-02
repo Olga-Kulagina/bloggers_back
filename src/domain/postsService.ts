@@ -2,11 +2,11 @@ import {GetPostType, postsRepository, PostType} from "../repositories/postsRepos
 import {bloggers} from "../routes/bloggersRouter";
 import {bloggersRepository, BloggerType} from "../repositories/bloggersRepository";
 import {commentsRepository, CommentType} from "../repositories/commentsRepository";
-import { formatISO } from 'date-fns'
+import {formatISO} from 'date-fns'
 import {UserDBType} from "../repositories/types";
 
 export const postsService = {
-    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
+    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetPostType> {
         return postsRepository.findPosts(title, PageNumber, PageSize)
     },
     async findPostById(id: string): Promise<PostType | null> {
@@ -43,15 +43,15 @@ export const postsService = {
         const result = await postsRepository.updatePost(id, title, shortDescription, content, bloggerId, bloggerName)
         return result
     },
-     async deletePost(id: string): Promise<boolean> {
-       const result = await postsRepository.deletePost(id)
-       return result
-   },
-   async deleteAllPosts(): Promise<boolean> {
-       const result = await postsRepository.deletePost()
-       return result
-   },
-   async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType | null> {
-       return await postsRepository.findPostsByBloggerId(id, PageNumber, PageSize)
-   }
+    async deletePost(id: string): Promise<boolean> {
+        const result = await postsRepository.deletePost(id)
+        return result
+    },
+    async deleteAllPosts(): Promise<boolean> {
+        const result = await postsRepository.deletePost()
+        return result
+    },
+    async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetPostType | null> {
+        return await postsRepository.findPostsByBloggerId(id, PageNumber, PageSize)
+    }
 }

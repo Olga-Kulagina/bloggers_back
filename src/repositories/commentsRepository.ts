@@ -1,4 +1,4 @@
-import {commentsCollection, usersCollection} from "./db";
+import {commentsCollection, postsCollection, usersCollection} from "./db";
 import {UserType} from "./usersRepository";
 
 
@@ -42,4 +42,17 @@ export const commentsRepository = {
             "items": items
         }
     },
+    async updateComment(id: string, comment: CommentType | null): Promise<boolean> {
+        const result = await commentsCollection.updateOne({id: id}, {$set: {...comment}})
+        return result.matchedCount === 1
+    },
+    async deleteComment(id?: string): Promise<boolean> {
+        let result
+        if (id) {
+            result = await commentsCollection.deleteOne({id: id})
+        } else {
+            result = await commentsCollection.deleteMany({})
+        }
+        return result.deletedCount === 1
+    }
 }
