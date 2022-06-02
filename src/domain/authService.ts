@@ -1,8 +1,5 @@
 import {UserDBType} from '../repositories/types'
-import {ObjectId} from 'mongodb'
 import bcrypt from 'bcrypt'
-import {jwtUtility} from '../application/jwt-utility'
-import {usersRepository} from "../repositories/usersRepository";
 import {usersService} from "./usersService";
 
 export const authService = {

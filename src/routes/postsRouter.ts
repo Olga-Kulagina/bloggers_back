@@ -5,6 +5,8 @@ import {bloggersService} from "../domain/bloggersService";
 import {postsService} from "../domain/postsService";
 import {authBasicMiddleware} from "../middlewares/authBasicMiddleware";
 import {authBearerMiddleware} from "../middlewares/authBearerMiddleware";
+import {usersService} from "../domain/usersService";
+import {commentsService} from "../domain/commentsService";
 
 
 export const postsRouter = Router({})
@@ -173,7 +175,25 @@ postsRouter.post('/:postId/comments', authBearerMiddleware, async (req: Request,
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        let newComment = await postsService.createComment(req.body.content, req.user)
+        let newComment = await commentsService.createComment(id, req.body.content, req.user)
         res.status(201).send(newComment)
+    }
+})
+
+postsRouter.get('/:postId/comments', authBearerMiddleware, async (req: Request, res: Response) => {
+    let errorMessages = []
+    const id = req.params.postId
+    const isPostExist = await postsService.findPostById(id)
+    if (!isPostExist) {
+        errorMessages.push({
+            "message": "Некорректно указано postId",
+            "field": "postId",
+        })
+    }
+    if (errorMessages.length > 0) {
+        res.status(400).send(error(errorMessages))
+    } else {
+        const foundComments = await commentsService.findCommentsByPostId(id, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
+        res.send(foundComments)
     }
 })

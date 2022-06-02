@@ -32,19 +32,6 @@ export const postsService = {
         let post = await postsRepository.findPostById(createdPost.id)
         return post
     },
-    async createComment(content: string, user: UserDBType): Promise<CommentType | null> {
-        const newComment = {
-            id: `${+(new Date())}`,
-            content,
-            userId: user.id,
-            userLogin: user.login,
-            addedAt: formatISO(Date.now()),
-        }
-
-        const createdComment = await commentsRepository.createComment(newComment)
-        let comment = await commentsRepository.findCommentById(createdComment.id)
-        return comment
-    },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
         const blogger = await bloggersRepository.findBloggerById(bloggerId)
         let bloggerName
