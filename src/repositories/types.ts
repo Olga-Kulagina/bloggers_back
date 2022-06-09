@@ -2,8 +2,20 @@ import {WithId} from 'mongodb'
 
 export type UserDBType = WithId<{
     id: string
-    login: string
-    passwordHash: string
-    createdAt: Date
+    accountData: {
+        userName: string
+        email: string
+        passwordHash: string
+        createdAt: Date
+    },
+    emailConfirmation: {
+        confirmationCode: string,
+        expirationDate: Date
+        isConfirmed: boolean,
+    }
 }>
+
+
+
+
 

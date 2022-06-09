@@ -21,18 +21,23 @@ export const usersRepository = {
         let b = PageSize || 10
         let totalCount = await usersCollection.count({})
         let items = await usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        let users = items.map(u => ({id: u.id, login: u.accountData.userName}))
 
         return {
             "pagesCount": Math.ceil(totalCount/+b),
             "page": +a,
             "pageSize": +b,
             "totalCount": totalCount,
-            "items": items
+            "items": users
         }
     },
     async findUserById(id: string): Promise<UserType | null> {
-        let user = await usersCollection.findOne({id: id}, {projection: {_id: 0}})
-        return user
+        let userDB = await usersCollection.findOne({id: id}, {projection: {_id: 0}})
+        if (userDB) {
+            let user = {id: userDB.id, login: userDB.accountData.userName}
+            return user
+        }
+        return null
     },
     async findByLogin(login: string): Promise<UserDBType | null> {
         let user = await usersCollection.findOne({login: login}, {projection: {_id: 0}})

@@ -2,6 +2,8 @@ import {GetUserType, usersRepository, UserType} from "../repositories/usersRepos
 import {UserDBType} from "../repositories/types";
 import {authService} from "./authService";
 import {ObjectId} from "mongodb";
+import {v4} from "uuid"
+import {add} from "date-fns";
 
 
 export const usersService = {
@@ -14,17 +16,29 @@ export const usersService = {
     async findUserByLogin(login: string): Promise<UserDBType | null> {
         return usersRepository.findByLogin(login)
     },
-    async createUser(login: string, password: string): Promise<UserType | null> {
+    async createUser(login: string, email: string, password: string): Promise<UserType | null> {
         const passwordHash = await authService.generateHash(password)
         const newUser: UserDBType = {
             _id: new ObjectId(),
             id: `${+(new Date())}`,
-            login,
-            passwordHash,
-            createdAt: new Date()
+            accountData: {
+                userName: login,
+                email,
+                passwordHash,
+                createdAt: new Date()
+            },
+            emailConfirmation: {
+                confirmationCode: v4(),
+                expirationDate: add(new Date(), {
+                    hours: 1,
+                    minutes: 3,
+                }),
+                isConfirmed: false,
+            }
         }
         const createdUser = await usersRepository.createUser(newUser)
-        let user = {id: createdUser.id, login: createdUser.login}
+        // тут надо отправить мыло
+        let user = {id: createdUser.id, login: createdUser.accountData.userName}
         return user
     },
     async deleteUser(id: string): Promise<boolean> {
