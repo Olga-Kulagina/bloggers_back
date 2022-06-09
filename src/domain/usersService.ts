@@ -1,5 +1,5 @@
 import {GetUserType, usersRepository, UserType} from "../repositories/usersRepository";
-import {UserDBType} from "../repositories/types";
+import {oldUserDBType, UserDBType} from "../repositories/types";
 import {authService} from "./authService";
 import {ObjectId} from "mongodb";
 import {v4} from "uuid"

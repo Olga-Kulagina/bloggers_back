@@ -2,7 +2,7 @@ import {MongoClient} from 'mongodb'
 import {BloggerType} from "./bloggersRepository";
 import {PostType} from "./postsRepository";
 import {settings} from "../settings";
-import {UserDBType} from "./types";
+import {oldUserDBType, UserDBType} from "./types";
 import {CommentType} from "./commentsRepository";
 
 export const client = new MongoClient(settings.MONGO_URI)

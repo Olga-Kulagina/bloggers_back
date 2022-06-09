@@ -3,7 +3,7 @@ import {bloggers} from "../routes/bloggersRouter";
 import {bloggersRepository, BloggerType} from "../repositories/bloggersRepository";
 import {commentsRepository, CommentType} from "../repositories/commentsRepository";
 import {formatISO} from 'date-fns'
-import {UserDBType} from "../repositories/types";
+import {oldUserDBType} from "../repositories/types";
 
 export const postsService = {
     async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetPostType> {

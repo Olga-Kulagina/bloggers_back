@@ -1,6 +1,6 @@
 import {bloggersCollection, postsCollection, usersCollection} from "./db";
 import {BloggerType} from "./bloggersRepository";
-import {UserDBType} from "./types";
+import {oldUserDBType, UserDBType} from "./types";
 
 export type UserType = {
     id: string

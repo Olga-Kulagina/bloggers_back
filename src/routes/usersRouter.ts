@@ -19,6 +19,13 @@ usersRouter.post('/', async (req: Request, res: Response) => {
             "field": "login",
         })
     }
+    let regexp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+    if (!req.body.email || !regexp.test(req.body.email)) {
+        errorMessages.push({
+            "message": "Некорректно указано email",
+            "field": "email",
+        })
+    }
     if (!req.body.password || !req.body.password.trim() || req.body.password.length > 20 || req.body.password.length < 6) {
         errorMessages.push({
             "message": "Некорректно указано password",
@@ -28,7 +35,7 @@ usersRouter.post('/', async (req: Request, res: Response) => {
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        let newUser = await usersService.createUser(req.body.login, req.body.password)
+        let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
         res.status(201).send(newUser)
     }
 })

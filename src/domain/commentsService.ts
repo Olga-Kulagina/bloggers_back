@@ -1,5 +1,5 @@
 import {GetUserType, usersRepository} from "../repositories/usersRepository";
-import {UserDBType} from "../repositories/types";
+import {oldUserDBType} from "../repositories/types";
 import {commentsRepository, CommentType, GetCommentsType} from "../repositories/commentsRepository";
 import {formatISO} from "date-fns";
 import {bloggersRepository} from "../repositories/bloggersRepository";
@@ -7,7 +7,7 @@ import {postsRepository} from "../repositories/postsRepository";
 
 
 export const commentsService = {
-    async createComment(id: string, content: string, user: UserDBType): Promise<CommentType | null> {
+    async createComment(id: string, content: string, user: oldUserDBType): Promise<CommentType | null> {
         const newComment = {
             postId: id,
             id: `${+(new Date())}`,

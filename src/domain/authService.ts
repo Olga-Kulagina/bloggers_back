@@ -1,4 +1,4 @@
-import {UserDBType} from '../repositories/types'
+import {oldUserDBType, UserDBType} from '../repositories/types'
 import bcrypt from 'bcrypt'
 import {usersService} from "./usersService";
 
@@ -22,7 +22,7 @@ export const authService = {
         if (!user) {
             return null
         }
-        const isPasswordCorrect = await this.isPasswordCorrect(password, user.passwordHash)
+        const isPasswordCorrect = await this.isPasswordCorrect(password, user.accountData.passwordHash)
         if (isPasswordCorrect) {
             return user
         } else {

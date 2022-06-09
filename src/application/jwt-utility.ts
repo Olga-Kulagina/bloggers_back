@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import {settings} from '../settings'
-import {UserDBType} from "../repositories/types";
+import {oldUserDBType, UserDBType} from "../repositories/types";
 
 export const jwtUtility = {
     /**
