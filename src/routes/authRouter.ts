@@ -55,4 +55,6 @@ authRouter.post('/registration',
                 res.send(204)
             }
         }
+
+
     })

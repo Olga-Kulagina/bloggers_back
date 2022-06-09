@@ -21,7 +21,10 @@ export const usersRepository = {
         let b = PageSize || 10
         let totalCount = await usersCollection.count({})
         let items = await usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
-        let users = items.map(u => ({id: u.id, login: u.accountData.userName}))
+        let users: Array<UserType> = []
+        if (items.length > 0) {
+            users = items.map(u => ({id: u.id, login: u.accountData.userName}))
+        }
 
         return {
             "pagesCount": Math.ceil(totalCount/+b),
@@ -40,7 +43,7 @@ export const usersRepository = {
         return null
     },
     async findByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
-        let user = await usersCollection.findOne( {$or : [{login: login}, {email: email}]}, {projection: {_id: 0}})
+        let user = await usersCollection.findOne( {$or : [{"accountData.userName": login}, {"accountData.email": email}]}, {projection: {_id: 0}})
         return user
     },
     async createUser(newUser: UserDBType): Promise<UserDBType> {
