@@ -39,8 +39,8 @@ export const usersRepository = {
         }
         return null
     },
-    async findByLogin(login: string): Promise<UserDBType | null> {
-        let user = await usersCollection.findOne({login: login}, {projection: {_id: 0}})
+    async findByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
+        let user = await usersCollection.findOne( {$or : [{login: login}, {email: email}]}, {projection: {_id: 0}})
         return user
     },
     async createUser(newUser: UserDBType): Promise<UserDBType> {

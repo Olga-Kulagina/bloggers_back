@@ -8,7 +8,7 @@ export const authRouter = Router({})
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
-        const user = await authService.checkCredentials(req.body.login, req.body.password)
+        const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         if (user) {
             const token = await jwtUtility.createJWT(user)
             res.status(200).send({token})
@@ -43,7 +43,16 @@ authRouter.post('/registration',
         if (errorMessages.length > 0) {
             res.status(400).send(error(errorMessages))
         } else {
-            let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
-            res.status(201).send(newUser)
+            let user = await usersService.findByLoginOrEmail(req.body.login, req.body.email)
+            if (user) {
+                errorMessages.push({
+                    "message": "Пользователь с таким email уже существует",
+                    "field": "email",
+                })
+                res.status(400).send(error(errorMessages))
+            } else {
+                let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
+                res.send(204)
+            }
         }
     })

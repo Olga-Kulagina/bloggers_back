@@ -13,8 +13,8 @@ export const usersService = {
     async findUserById(id: string): Promise<UserType | null> {
         return usersRepository.findUserById(id)
     },
-    async findUserByLogin(login: string): Promise<UserDBType | null> {
-        return usersRepository.findByLogin(login)
+    async findByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
+        return usersRepository.findByLoginOrEmail(login, email)
     },
     async createUser(login: string, email: string, password: string): Promise<UserType | null> {
         const passwordHash = await authService.generateHash(password)

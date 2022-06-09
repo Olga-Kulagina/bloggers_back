@@ -17,8 +17,8 @@ export const authService = {
      * @param password
      * @return null if credentials are incorrect and admin entity in opposite case
      */
-    async checkCredentials(login: string, password: string): Promise<UserDBType | null> {
-        const user = await usersService.findUserByLogin(login)
+    async checkCredentials(login: string, email: string, password: string): Promise<UserDBType | null> {
+        const user = await usersService.findByLoginOrEmail(login, email)
         if (!user) {
             return null
         }
