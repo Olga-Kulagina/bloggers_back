@@ -45,10 +45,19 @@ authRouter.post('/registration',
         } else {
             let user = await usersService.findByLoginOrEmail(req.body.login, req.body.email)
             if (user) {
-                res.status(400).send({errorsMessages: [{
-                        "message": "Пользователь с таким email уже существует",
+                if (user.accountData.userName === req.body.login) {
+                    errorMessages.push({
+                        "message": "Некорректно указано login",
+                        "field": "login",
+                    })
+                }
+                if (user.accountData.email === req.body.email) {
+                    errorMessages.push({
+                        "message": "Некорректно указано email",
                         "field": "email",
-                    }]})
+                    })
+                }
+                res.status(400).send()
             } else {
                 let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
                 res.status(204).send("Регистрация прошла успешно")

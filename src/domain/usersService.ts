@@ -38,7 +38,7 @@ export const usersService = {
             }
         }
         const createdUser = await usersRepository.createUser(newUser)
-        await emailAdapter.emailSend(email, "Регистрация", "<h1>Регистрация прошла успешно</h1>")
+        await emailAdapter.emailSend(email, "Регистрация", `${createdUser.emailConfirmation.confirmationCode}`)
         let user = {id: createdUser.id, login: createdUser.accountData.userName}
         return user
     },
