@@ -4,6 +4,7 @@ import {authService} from "./authService";
 import {ObjectId} from "mongodb";
 import {v4} from "uuid"
 import {add} from "date-fns";
+import {emailAdapter} from "../adapters/emailAdapter";
 
 
 export const usersService = {
@@ -37,7 +38,7 @@ export const usersService = {
             }
         }
         const createdUser = await usersRepository.createUser(newUser)
-        // тут надо отправить мыло
+        await emailAdapter.emailSend(email, "Регистрация", "<h1>Регистрация прошла успешно</h1>")
         let user = {id: createdUser.id, login: createdUser.accountData.userName}
         return user
     },

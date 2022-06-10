@@ -7,6 +7,7 @@ import {usersRouter} from "./routes/usersRouter";
 import {authRouter} from "./routes/authRouter";
 import {commentsRouter} from "./routes/commentsRouter";
 import {testingRouter} from "./routes/testingRouter";
+import {emailRouter} from "./routes/emailRouter";
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -20,6 +21,7 @@ app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)
 app.use('/testing', testingRouter)
+app.use('/email', emailRouter)
 
 export const error = (errorMessages: Array<{ field: string, message: string }>) => {
     return {
