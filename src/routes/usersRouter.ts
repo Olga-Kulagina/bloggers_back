@@ -35,7 +35,7 @@ usersRouter.post('/', async (req: Request, res: Response) => {
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
+        let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password, req.ip)
         res.status(201).send(newUser)
     }
 })
