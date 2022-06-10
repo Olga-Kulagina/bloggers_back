@@ -44,6 +44,7 @@ authRouter.post('/registration',
             res.status(400).send({errorsMessages: errorMessages})
         } else {
             let user = await usersService.findByLoginOrEmail(req.body.login, req.body.email)
+            let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip)
             if (user) {
                 if (user.accountData.userName === req.body.login) {
                     errorMessages.push({
@@ -57,10 +58,12 @@ authRouter.post('/registration',
                         "field": "email",
                     })
                 }
-                res.status(400).send()
+                res.status(400).send({errorsMessages: errorMessages})
+            } else if (isMore5UsersOnIp) {
+                res.send(429)
             } else {
-                let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password)
-                res.status(204).send("Регистрация прошла успешно")
+                let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password, req.ip)
+                res.status(201).send("Регистрация прошла успешно")
             }
         }
 

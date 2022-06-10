@@ -12,6 +12,8 @@ import {emailRouter} from "./routes/emailRouter";
 const app = express()
 const port = process.env.PORT || 5000
 
+app.set('trust proxy', true)
+
 app.use(cors())
 app.use(express.json())
 

@@ -17,7 +17,10 @@ export const usersService = {
     async findByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
         return usersRepository.findByLoginOrEmail(login, email)
     },
-    async createUser(login: string, email: string, password: string): Promise<UserType | null> {
+    async isMore5UsersOnIp(ip: string) {
+        return usersRepository.isMore5UsersOnIp(ip)
+    },
+    async createUser(login: string, email: string, password: string, ip: string): Promise<UserType | null> {
         const passwordHash = await authService.generateHash(password)
         const newUser: UserDBType = {
             _id: new ObjectId(),
@@ -26,7 +29,8 @@ export const usersService = {
                 userName: login,
                 email,
                 passwordHash,
-                createdAt: new Date()
+                createdAt: new Date(),
+                ip: ip
             },
             emailConfirmation: {
                 confirmationCode: v4(),
