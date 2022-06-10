@@ -46,6 +46,10 @@ export const usersRepository = {
         let user = await usersCollection.findOne( {$or : [{"accountData.userName": login}, {"accountData.email": email}]}, {projection: {_id: 0}})
         return user
     },
+    async findUserByConfirmationCode(code: string): Promise<UserDBType | null> {
+        let user = await usersCollection.findOne( {"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}})
+        return user
+    },
     async isMore5UsersOnIp(ip: string): Promise<boolean> {
         let users = await usersCollection.find( {"accountData.ip": ip}, {projection: {_id: 0}}).toArray()
         if (users.length > 5) {

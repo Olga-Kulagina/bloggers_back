@@ -20,6 +20,9 @@ export const usersService = {
     async isMore5UsersOnIp(ip: string) {
         return usersRepository.isMore5UsersOnIp(ip)
     },
+    async findUserByConfirmationCode(code: string) {
+        return usersRepository.findUserByConfirmationCode(code)
+    },
     async createUser(login: string, email: string, password: string, ip: string): Promise<UserType | null> {
         const passwordHash = await authService.generateHash(password)
         const newUser: UserDBType = {

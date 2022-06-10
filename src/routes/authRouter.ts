@@ -82,8 +82,14 @@ authRouter.post('/registration-confirmation',
                 "field": "code",
             })
         }
+        let userWithCode = usersService.findUserByConfirmationCode(req.body.code)
         if (errorMessages.length > 0) {
             res.status(400).send({errorsMessages: errorMessages})
+        } else if (!userWithCode) {
+            res.status(400).send({errorsMessages: [{
+                    "message": "Юзера с таким code не существует",
+                    "field": "code",
+                }]})
         } else {
                 res.status(204).send(`получилось ${req.body.code}`)
             }
