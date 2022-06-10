@@ -63,10 +63,29 @@ authRouter.post('/registration',
                 res.send(429)
             } else {
                 let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password, req.ip)
-                res.send(204)
-                res.send("Регистрация прошла успешно")
+                res.status(204).send("Регистрация прошла успешно")
             }
         }
-
-
     })
+/*authRouter.post('/registration-email-resending',
+    async (req: Request, res: Response) => {
+                let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password, req.ip)
+                res.status(204).send("Регистрация прошла успешно")
+        }
+    })*/
+authRouter.post('/registration-confirmation',
+    async (req: Request, res: Response) => {
+        let errorMessages = []
+        if (!req.body.code) {
+            errorMessages.push({
+                "message": "Некорректно указано code",
+                "field": "code",
+            })
+        }
+        if (errorMessages.length > 0) {
+            res.status(400).send({errorsMessages: errorMessages})
+        } else {
+                res.status(204).send(`получилось ${req.body.code}`)
+            }
+        }
+    )
