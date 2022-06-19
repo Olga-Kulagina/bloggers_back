@@ -48,7 +48,7 @@ export const usersService = {
             }
         }
         const createdUser = await usersRepository.createUser(newUser)
-        await emailAdapter.emailSend(email, "Регистрация", `<a>https://incubator-bloggers-back.herokuapp.com/registration-confirmation?code=${createdUser.emailConfirmation.confirmationCode}</a>`)
+        await emailAdapter.emailSend(email, "Регистрация", `<a>https://incubator-bloggers-back.herokuapp.com/auth/registration-confirmation?code=${createdUser.emailConfirmation.confirmationCode}</a>`)
         let user = {id: createdUser.id, login: createdUser.accountData.userName}
         return user
     },
