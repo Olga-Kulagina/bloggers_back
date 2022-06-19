@@ -76,22 +76,35 @@ authRouter.post('/registration',
 authRouter.post('/registration-confirmation',
     async (req: Request, res: Response) => {
         let errorMessages = []
-        if (!req.body.code) {
+        if (!req.query.code) {
             errorMessages.push({
                 "message": "Некорректно указано code",
                 "field": "code",
             })
         }
-        let userWithCode = usersService.findUserByConfirmationCode(req.body.code)
+        let userWithCode = await usersService.findUserByConfirmationCode(`${req.query.code}`)
+        console.log(userWithCode)
         if (errorMessages.length > 0) {
             res.status(400).send({errorsMessages: errorMessages})
         } else if (!userWithCode) {
-            res.status(400).send({errorsMessages: [{
+            res.status(400).send({
+                errorsMessages: [{
                     "message": "Юзера с таким code не существует",
                     "field": "code",
-                }]})
+                }]
+            })
         } else {
-                res.status(204).send(`получилось ${req.body.code}`)
+            let confirmUser = await usersService.confirmUser(userWithCode.id)
+            if (confirmUser) {
+                res.send(204)
+            } else {
+                res.status(400).send({
+                    errorsMessages: [{
+                        "message": "Что-то пошло не так",
+                        "field": "code",
+                    }]
+                })
             }
         }
-    )
+    }
+)

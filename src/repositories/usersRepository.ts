@@ -1,4 +1,4 @@
-import {bloggersCollection, postsCollection, usersCollection} from "./db";
+import {bloggersCollection, commentsCollection, postsCollection, usersCollection} from "./db";
 import {BloggerType} from "./bloggersRepository";
 import {oldUserDBType, UserDBType} from "./types";
 
@@ -49,6 +49,10 @@ export const usersRepository = {
     async findUserByConfirmationCode(code: string): Promise<UserDBType | null> {
         let user = await usersCollection.findOne( {"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}})
         return user
+    },
+    async confirmUser(id: string): Promise<boolean> {
+        const result = await usersCollection.updateOne({id: id}, {$set: {"emailConfirmation.isConfirmed": true}})
+        return result.matchedCount === 1
     },
     async isMore5UsersOnIp(ip: string): Promise<boolean> {
         let users = await usersCollection.find( {"accountData.ip": ip}, {projection: {_id: 0}}).toArray()

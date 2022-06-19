@@ -23,6 +23,9 @@ export const usersService = {
     async findUserByConfirmationCode(code: string) {
         return usersRepository.findUserByConfirmationCode(code)
     },
+    async confirmUser(id: string) {
+        return usersRepository.confirmUser(id)
+    },
     async createUser(login: string, email: string, password: string, ip: string): Promise<UserType | null> {
         const passwordHash = await authService.generateHash(password)
         const newUser: UserDBType = {
