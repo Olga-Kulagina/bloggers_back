@@ -16,7 +16,7 @@ export const emailAdapter = {
                 from: '"Olga" <kulagina24601@gmail.com>',
                 to: email,
                 subject: subject,
-                html: message,
+                text: message,
             }
         )
         return info
