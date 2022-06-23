@@ -1,7 +1,6 @@
 import {Request, Response, Router} from "express";
 import {jwtUtility} from "../application/jwt-utility";
 import {authService} from "../domain/authService";
-import {error} from "../index";
 import {usersService} from "../domain/usersService";
 import {emailAdapter} from "../adapters/emailAdapter";
 
@@ -9,13 +8,15 @@ export const authRouter = Router({})
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
+    res.send(200)
+        /*
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         if (user) {
             const token = await jwtUtility.createJWT(user)
             res.status(200).send({token})
         } else {
             res.sendStatus(401)
-        }
+        }*/
     })
 
 authRouter.post('/registration',
