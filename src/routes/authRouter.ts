@@ -3,6 +3,7 @@ import {jwtUtility} from "../application/jwt-utility";
 import {authService} from "../domain/authService";
 import {error} from "../index";
 import {usersService} from "../domain/usersService";
+import {emailAdapter} from "../adapters/emailAdapter";
 
 export const authRouter = Router({})
 
@@ -63,7 +64,7 @@ authRouter.post('/registration',
                 res.send(429)
             } else {
                 let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password, req.ip)
-                res.status(204).send("Регистрация прошла успешно")
+                res.send(204)
             }
         }
     })
@@ -76,14 +77,13 @@ authRouter.post('/registration',
 authRouter.post('/registration-confirmation',
     async (req: Request, res: Response) => {
         let errorMessages = []
-        if (!req.query.code) {
+        if (!req.body.code) {
             errorMessages.push({
                 "message": "Некорректно указано code",
                 "field": "code",
             })
         }
-        let userWithCode = await usersService.findUserByConfirmationCode(`${req.query.code}`)
-        console.log(userWithCode)
+        let userWithCode = await usersService.findUserByConfirmationCode(`${req.body.code}`)
         if (errorMessages.length > 0) {
             res.status(400).send({errorsMessages: errorMessages})
         } else if (!userWithCode) {
@@ -93,9 +93,17 @@ authRouter.post('/registration-confirmation',
                     "field": "code",
                 }]
             })
+        } else if (userWithCode.emailConfirmation.isConfirmed) {
+            res.status(400).send({
+                errorsMessages: [{
+                    "message": "Юзера с таким code уже подтвержден",
+                    "field": "code",
+                }]
+            })
         } else {
             let confirmUser = await usersService.confirmUser(userWithCode.id)
             if (confirmUser) {
+                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация подтверждена", `Вы успешно зарегистрировались!`)
                 res.send(204)
             } else {
                 res.status(400).send({
