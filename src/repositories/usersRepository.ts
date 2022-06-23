@@ -50,6 +50,10 @@ export const usersRepository = {
         let user = await usersCollection.findOne( {"emailConfirmation.confirmationCode": code}, {projection: {_id: 0}})
         return user
     },
+    async setNewConfirmationCode(id: string, code: string): Promise<boolean> {
+        let result = await usersCollection.updateOne( {id: id}, {$set: {"emailConfirmation.confirmationCode": code}})
+        return result.matchedCount === 1
+    },
     async confirmUser(id: string): Promise<boolean> {
         const result = await usersCollection.updateOne({id: id}, {$set: {"emailConfirmation.isConfirmed": true}})
         return result.matchedCount === 1

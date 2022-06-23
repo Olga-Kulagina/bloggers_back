@@ -3,20 +3,22 @@ import {jwtUtility} from "../application/jwt-utility";
 import {authService} from "../domain/authService";
 import {usersService} from "../domain/usersService";
 import {emailAdapter} from "../adapters/emailAdapter";
+import {v4} from "uuid";
 
 export const authRouter = Router({})
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
-        await emailAdapter.emailSend('matkartmod@yandex.ru', "Работает!", `${req.body.login} ${req.body.email} ${req.body.password}`)
-    res.status(200).send("aaaaaaaaaaa")
-/*        const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
+
+        //await emailAdapter.emailSend('matkartmod@yandex.ru', "Работает!", `${req.body.login} ${req.body.email} ${req.body.password}`)
+
+        const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         if (user) {
             const token = await jwtUtility.createJWT(user)
-            res.status(200).send({token})
+            res.status(200).send({token: token})
         } else {
             res.sendStatus(401)
-        }*/
+        }
     })
 
 authRouter.post('/registration',
@@ -142,17 +144,9 @@ authRouter.post('/registration-email-resending',
                 }]
             })
         } else {
-            let confirmUser = await usersService.confirmUser(userWithCode.id)
-            if (confirmUser) {
-                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${userWithCode.emailConfirmation.confirmationCode}`)
+                let newCode = v4()
+                await usersService.setNewConfirmationCode(userWithCode.id, newCode)
+                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
                 res.send(204)
-            } else {
-                res.status(400).send({
-                    errorsMessages: [{
-                        "message": "Что-то пошло не так",
-                        "field": "code",
-                    }]
-                })
-            }
         }
     })

@@ -23,6 +23,9 @@ export const usersService = {
     async findUserByConfirmationCode(code: string) {
         return usersRepository.findUserByConfirmationCode(code)
     },
+    async setNewConfirmationCode(id: string, code: string) {
+        return usersRepository.setNewConfirmationCode(id, code)
+    },
     async confirmUser(id: string) {
         return usersRepository.confirmUser(id)
     },
