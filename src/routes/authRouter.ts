@@ -18,7 +18,6 @@ authRouter.post('/login',
         }
     })
 
-
 authRouter.post('/registration',
     async (req: Request, res: Response) => {
         let errorMessages = []
@@ -68,12 +67,7 @@ authRouter.post('/registration',
             }
         }
     })
-/*authRouter.post('/registration-email-resending',
-    async (req: Request, res: Response) => {
-                let newUser = await usersService.createUser(req.body.login, req.body.email, req.body.password, req.ip)
-                res.status(204).send("Регистрация прошла успешно")
-        }
-    })*/
+
 authRouter.post('/registration-confirmation',
     async (req: Request, res: Response) => {
         let errorMessages = []
@@ -96,7 +90,7 @@ authRouter.post('/registration-confirmation',
         } else if (userWithCode.emailConfirmation.isConfirmed) {
             res.status(400).send({
                 errorsMessages: [{
-                    "message": "Юзера с таким code уже подтвержден",
+                    "message": "Юзер с таким code уже подтвержден",
                     "field": "code",
                 }]
             })
@@ -116,3 +110,46 @@ authRouter.post('/registration-confirmation',
         }
     }
 )
+
+authRouter.post('/registration-email-resending',
+    async (req: Request, res: Response) => {
+        let errorMessages = []
+        let regexp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+        if (!req.body.email || !regexp.test(req.body.email)) {
+            errorMessages.push({
+                "message": "Некорректно указано email",
+                "field": "email",
+            })
+        }
+        let userWithCode = await usersService.findByLoginOrEmail("", req.body.email)
+        if (errorMessages.length > 0) {
+            res.status(400).send({errorsMessages: errorMessages})
+        } else if (!userWithCode) {
+            res.status(400).send({
+                errorsMessages: [{
+                    "message": "Юзера с таким email не существует",
+                    "field": "email",
+                }]
+            })
+        } else if (userWithCode.emailConfirmation.isConfirmed) {
+            res.status(400).send({
+                errorsMessages: [{
+                    "message": "Юзер с таким code уже подтвержден",
+                    "field": "code",
+                }]
+            })
+        } else {
+            let confirmUser = await usersService.confirmUser(userWithCode.id)
+            if (confirmUser) {
+                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${userWithCode.emailConfirmation.confirmationCode}`)
+                res.send(204)
+            } else {
+                res.status(400).send({
+                    errorsMessages: [{
+                        "message": "Что-то пошло не так",
+                        "field": "code",
+                    }]
+                })
+            }
+        }
+    })
