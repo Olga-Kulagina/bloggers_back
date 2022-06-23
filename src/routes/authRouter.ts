@@ -12,7 +12,7 @@ authRouter.post('/login',
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         if (user) {
             const token = await jwtUtility.createJWT(user)
-            res.status(200).send({token})
+            res.status(200).send({token: "aaaaaaaaaaaaaaaaaaaaaaaa"})
         } else {
             res.sendStatus(401)
         }
@@ -88,12 +88,14 @@ authRouter.post('/registration-confirmation',
                 }]
             })
         } else if (userWithCode.emailConfirmation.isConfirmed) {
+            console.log("sssss")
             res.status(400).send({
                 errorsMessages: [{
                     "message": "Юзер с таким code уже подтвержден",
                     "field": "code",
                 }]
             })
+            return
         } else {
             let confirmUser = await usersService.confirmUser(userWithCode.id)
             if (confirmUser) {
@@ -134,8 +136,8 @@ authRouter.post('/registration-email-resending',
         } else if (userWithCode.emailConfirmation.isConfirmed) {
             res.status(400).send({
                 errorsMessages: [{
-                    "message": "Юзер с таким code уже подтвержден",
-                    "field": "code",
+                    "message": "Юзер с таким email уже подтвержден",
+                    "field": "email",
                 }]
             })
         } else {
