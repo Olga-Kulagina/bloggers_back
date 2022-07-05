@@ -61,7 +61,7 @@ export const usersRepository = {
     },
     async isMore5UsersOnIp(ip: string, requestTime: number): Promise<boolean> {
         let time10sec = addSeconds(new Date(requestTime), -10).getTime()
-        let requestCountItems = await requestCountCollection.find({time: {$gt: time10sec}}, {projection: {_id: 0}}).toArray()
+        let requestCountItems = await requestCountCollection.find({$and : [{time: {$gt: time10sec}}, {ip: ip}]}, {projection: {_id: 0}}).toArray()
         if (requestCountItems.length > 5) {
             return true
         }
