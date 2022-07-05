@@ -60,9 +60,9 @@ export const usersRepository = {
         return result.matchedCount === 1
     },
     async isMore5UsersOnIp(ip: string, requestTime: number): Promise<boolean> {
-        let time10sec = addSeconds(new Date(requestTime), -9).getTime()
+        let time10sec = addSeconds(new Date(requestTime), -10).getTime()
         let requestCountItems = await requestCountCollection.find({$and : [{time: {$gt: time10sec}}, {ip: ip}]}, {projection: {_id: 0}}).toArray()
-        if (requestCountItems.length > 5) {
+        if (requestCountItems.length > 4) {
             return true
         }
         return false
