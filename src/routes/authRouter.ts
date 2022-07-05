@@ -15,15 +15,15 @@ authRouter.post('/login',
 
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
-        if (user) {
-            if (isMore5UsersOnIp) {
-                res.send(429)
-                return
-            }
-            const token = await jwtUtility.createJWT(user)
-            res.status(200).send({token: token})
+        if (isMore5UsersOnIp) {
+            res.send(429)
         } else {
-            res.sendStatus(401)
+            if (user) {
+                const token = await jwtUtility.createJWT(user)
+                res.status(200).send({token: token})
+            } else {
+                res.sendStatus(401)
+            }
         }
     })
 
@@ -157,11 +157,11 @@ authRouter.post('/registration-email-resending',
             let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
             if (isMore5UsersOnIp) {
                 res.send(429)
-                return
+            } else {
+                let newCode = v4()
+                await usersService.setNewConfirmationCode(userWithCode.id, newCode)
+                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
+                res.send(204)
             }
-            let newCode = v4()
-            await usersService.setNewConfirmationCode(userWithCode.id, newCode)
-            await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
-            res.send(204)
         }
     })
