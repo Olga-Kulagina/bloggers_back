@@ -10,11 +10,16 @@ export const authRouter = Router({})
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
-
-        //await emailAdapter.emailSend('matkartmod@yandex.ru', "Работает!", `${req.body.login} ${req.body.email} ${req.body.password}`)
+        let requestTime = (new Date()).getTime()
+        await requestCountService.createRequestItem(req.ip, requestTime)
 
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
+        let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
         if (user) {
+            if (isMore5UsersOnIp) {
+                res.send(429)
+                return
+            }
             const token = await jwtUtility.createJWT(user)
             res.status(200).send({token: token})
         } else {
@@ -24,8 +29,7 @@ authRouter.post('/login',
 
 authRouter.post('/registration',
     async (req: Request, res: Response) => {
-    let requestTime = (new Date()).getTime()
-        console.log(requestTime)
+        let requestTime = (new Date()).getTime()
         await requestCountService.createRequestItem(req.ip, requestTime)
         let errorMessages = []
         if (!req.body.login || !req.body.login.trim() || req.body.login.length > 10 || req.body.login.length < 3) {
@@ -122,6 +126,8 @@ authRouter.post('/registration-confirmation',
 
 authRouter.post('/registration-email-resending',
     async (req: Request, res: Response) => {
+        let requestTime = (new Date()).getTime()
+        await requestCountService.createRequestItem(req.ip, requestTime)
         let errorMessages = []
         let regexp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
         if (!req.body.email || !regexp.test(req.body.email)) {
@@ -148,9 +154,14 @@ authRouter.post('/registration-email-resending',
                 }]
             })
         } else {
-                let newCode = v4()
-                await usersService.setNewConfirmationCode(userWithCode.id, newCode)
-                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
-                res.send(204)
+            let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
+            if (isMore5UsersOnIp) {
+                res.send(429)
+                return
+            }
+            let newCode = v4()
+            await usersService.setNewConfirmationCode(userWithCode.id, newCode)
+            await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
+            res.send(204)
         }
     })
