@@ -4,6 +4,7 @@ import {authService} from "../domain/authService";
 import {usersService} from "../domain/usersService";
 import {emailAdapter} from "../adapters/emailAdapter";
 import {v4} from "uuid";
+import {requestCountService} from "../domain/requestCountService";
 
 export const authRouter = Router({})
 
@@ -23,6 +24,9 @@ authRouter.post('/login',
 
 authRouter.post('/registration',
     async (req: Request, res: Response) => {
+    let requestTime = (new Date()).getTime()
+        console.log(requestTime)
+        await requestCountService.createRequestItem(req.ip, requestTime)
         let errorMessages = []
         if (!req.body.login || !req.body.login.trim() || req.body.login.length > 10 || req.body.login.length < 3) {
             errorMessages.push({
@@ -47,7 +51,7 @@ authRouter.post('/registration',
             res.status(400).send({errorsMessages: errorMessages})
         } else {
             let user = await usersService.findByLoginOrEmail(req.body.login, req.body.email)
-            let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip)
+            let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
             if (user) {
                 if (user.accountData.userName === req.body.login) {
                     errorMessages.push({

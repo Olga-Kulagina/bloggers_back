@@ -17,8 +17,8 @@ export const usersService = {
     async findByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
         return usersRepository.findByLoginOrEmail(login, email)
     },
-    async isMore5UsersOnIp(ip: string) {
-        return usersRepository.isMore5UsersOnIp(ip)
+    async isMore5UsersOnIp(ip: string, requestTime: number) {
+        return usersRepository.isMore5UsersOnIp(ip, requestTime)
     },
     async findUserByConfirmationCode(code: string) {
         return usersRepository.findUserByConfirmationCode(code)
