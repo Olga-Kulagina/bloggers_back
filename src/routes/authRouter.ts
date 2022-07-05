@@ -11,22 +11,17 @@ export const authRouter = Router({})
 authRouter.post('/login',
     async (req: Request, res: Response) => {
         let requestTime = (new Date()).getTime()
-        await requestCountService.createRequestItem(req.ip, requestTime)
+
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
-        if (user) {
-            if (isMore5UsersOnIp) {
-                res.send(429)
-            } else {
-                await requestCountService.createRequestItem(req.ip, requestTime)
+        await requestCountService.createRequestItem(req.ip, requestTime)
+        if (isMore5UsersOnIp) {
+            res.send(429)
+        } else {
+            if (user) {
                 const token = await jwtUtility.createJWT(user)
                 res.status(200).send({token: token})
-            }
-        } else {
-            if (isMore5UsersOnIp) {
-                res.send(429)
             } else {
-                await requestCountService.createRequestItem(req.ip, requestTime)
                 res.sendStatus(401)
             }
         }
