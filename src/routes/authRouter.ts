@@ -15,16 +15,17 @@ authRouter.post('/login',
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
         await requestCountService.createRequestItem(req.ip, requestTime)
-        if (isMore5UsersOnIp) {
-            res.send(429)
-        } else {
-            if (user) {
+        if (user) {
+            if (isMore5UsersOnIp) {
+                res.sendStatus(429)
+            } else {
                 const token = await jwtUtility.createJWT(user)
                 res.status(200).send({token: token})
-            } else {
-                res.sendStatus(401)
             }
+        } else {
+            res.sendStatus(401)
         }
+
     })
 
 authRouter.post('/registration',
