@@ -124,6 +124,8 @@ authRouter.post('/registration-confirmation',
     }
 )
 
+let arr: any = []
+
 authRouter.post('/registration-email-resending',
     async (req: Request, res: Response) => {
         let requestTime = (new Date()).getTime()
@@ -136,42 +138,37 @@ authRouter.post('/registration-email-resending',
                 "field": "email",
             })
         }
+        let userWithCode = await usersService.findByLoginOrEmail("", req.body.email)
         if (errorMessages.length > 0) {
             res.status(400).send({errorsMessages: errorMessages})
+        } else if (!userWithCode) {
+            res.status(400).send({
+                errorsMessages: [{
+                    "message": "Юзера с таким email не существует",
+                    "field": "email",
+                }]
+            })
+        } else if (userWithCode.emailConfirmation.isConfirmed) {
+            res.status(400).send({
+                errorsMessages: [{
+                    "message": "Юзер с таким email уже подтвержден",
+                    "field": "email",
+                }]
+            })
         } else {
-            let userWithCode = await usersService.findByLoginOrEmail("", req.body.email)
-            let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
-            if (!userWithCode) {
-                res.status(400).send({
-                    errorsMessages: [{
-                        "message": "Юзера с таким email не существует",
-                        "field": "email",
-                    }]
-                })
+            let hArr = arr.filter((item: any) => item.date > Date.now() - 10 * 1000)
+            //let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
+            if (hArr.length > 4) {
+                res.send(429)
             } else {
-                if (userWithCode.emailConfirmation.isConfirmed) {
-                    res.status(400).send({
-                        errorsMessages: [{
-                            "message": "Юзер с таким email уже подтвержден",
-                            "field": "email",
-                        }]
-                    })
-                } else if (isMore5UsersOnIp) {
-                    let isMore5UsersOnIpR = await usersService.isMore5UsersOnIpR(req.ip, requestTime)
-                    if (isMore5UsersOnIpR) {
-                        let newCode = v4()
-                        await usersService.setNewConfirmationCode(userWithCode.id, newCode)
-                        await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
-                        res.send(204)
-                    } else {
-                        res.send(429)
-                    }
-                } else {
-                    let newCode = v4()
-                    await usersService.setNewConfirmationCode(userWithCode.id, newCode)
-                    await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
-                    res.send(204)
-                }
+                arr.push({
+                    ip: req.ip,
+                    date: Date.now()
+                })
+                let newCode = v4()
+                await usersService.setNewConfirmationCode(userWithCode.id, newCode)
+                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
+                res.send(204)
             }
         }
     })
