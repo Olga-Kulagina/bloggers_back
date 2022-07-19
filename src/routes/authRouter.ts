@@ -154,8 +154,8 @@ authRouter.post('/registration-email-resending',
                 }]
             })
         } else {
-            let isMore4UsersOnIp = await usersService.isMore4UsersOnIp(req.ip, requestTime)
-            if (isMore4UsersOnIp) {
+            let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
+            if (userWithCode && isMore5UsersOnIp) {
                 res.send(429)
             } else {
                 let newCode = v4()
