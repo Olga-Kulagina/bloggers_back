@@ -23,6 +23,9 @@ export const usersService = {
     async isMore4UsersOnIp(ip: string, requestTime: number) {
         return usersRepository.isMore4UsersOnIp(ip, requestTime)
     },
+    async isMore5UsersOnIpR(ip: string, requestTime: number) {
+        return usersRepository.isMore5UsersOnIpR(ip, requestTime)
+    },
     async findUserByConfirmationCode(code: string) {
         return usersRepository.findUserByConfirmationCode(code)
     },

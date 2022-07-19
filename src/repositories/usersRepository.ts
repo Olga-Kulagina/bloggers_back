@@ -76,6 +76,14 @@ export const usersRepository = {
         }
         return false
     },
+    async isMore5UsersOnIpR(ip: string, requestTime: number): Promise<boolean> {
+        let time10sec = addSeconds(new Date(requestTime), -10).getTime()
+        let requestCountItems = await requestCountCollection.find({$and : [{time: {$gt: time10sec}}, {ip: ip}]}, {projection: {_id: 0}}).toArray()
+        if (requestCountItems.length === 7) {
+            return false
+        }
+        return true
+    },
     async createUser(newUser: UserDBType): Promise<UserDBType> {
         const result = await usersCollection.insertOne(newUser)
         return newUser

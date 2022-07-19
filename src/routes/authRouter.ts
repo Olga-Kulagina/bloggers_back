@@ -157,7 +157,15 @@ authRouter.post('/registration-email-resending',
                         }]
                     })
                 } else if (isMore5UsersOnIp) {
-                    res.send(429)
+                    let isMore5UsersOnIpR = await usersService.isMore5UsersOnIpR(req.ip, requestTime)
+                    if (isMore5UsersOnIpR) {
+                        let newCode = v4()
+                        await usersService.setNewConfirmationCode(userWithCode.id, newCode)
+                        await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
+                        res.send(204)
+                    } else {
+                        res.send(429)
+                    }
                 } else {
                     let newCode = v4()
                     await usersService.setNewConfirmationCode(userWithCode.id, newCode)
