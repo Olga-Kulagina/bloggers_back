@@ -136,32 +136,34 @@ authRouter.post('/registration-email-resending',
                 "field": "email",
             })
         }
-        let userWithCode = await usersService.findByLoginOrEmail("", req.body.email)
         if (errorMessages.length > 0) {
             res.status(400).send({errorsMessages: errorMessages})
-        } else if (!userWithCode) {
-            res.status(400).send({
-                errorsMessages: [{
-                    "message": "Юзера с таким email не существует",
-                    "field": "email",
-                }]
-            })
-        } else if (userWithCode.emailConfirmation.isConfirmed) {
-            res.status(400).send({
-                errorsMessages: [{
-                    "message": "Юзер с таким email уже подтвержден",
-                    "field": "email",
-                }]
-            })
         } else {
+            let userWithCode = await usersService.findByLoginOrEmail("", req.body.email)
             let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
-            if (userWithCode && isMore5UsersOnIp) {
-                res.send(429)
+            if (!userWithCode) {
+                res.status(400).send({
+                    errorsMessages: [{
+                        "message": "Юзера с таким email не существует",
+                        "field": "email",
+                    }]
+                })
             } else {
-                let newCode = v4()
-                await usersService.setNewConfirmationCode(userWithCode.id, newCode)
-                await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
-                res.send(204)
+                if (userWithCode.emailConfirmation.isConfirmed) {
+                    res.status(400).send({
+                        errorsMessages: [{
+                            "message": "Юзер с таким email уже подтвержден",
+                            "field": "email",
+                        }]
+                    })
+                } else if (isMore5UsersOnIp) {
+                    res.send(429)
+                } else {
+                    let newCode = v4()
+                    await usersService.setNewConfirmationCode(userWithCode.id, newCode)
+                    await emailAdapter.emailSend(userWithCode.accountData.email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${newCode}`)
+                    res.send(204)
+                }
             }
         }
     })

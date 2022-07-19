@@ -5,6 +5,8 @@ import {settings} from "../settings";
 import {UserDBType} from "./types";
 import {CommentType} from "./commentsRepository";
 import {RequestItemType} from "./requestCountRepository";
+import {requestCountService} from "../domain/requestCountService";
+import {usersService} from "../domain/usersService";
 
 export const client = new MongoClient(settings.MONGO_URI)
 export const db = client.db("youtube")
