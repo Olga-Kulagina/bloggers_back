@@ -8,16 +8,22 @@ import {requestCountService} from "../domain/requestCountService";
 
 export const authRouter = Router({})
 
+let arrLogin: any = []
+
 authRouter.post('/login',
     async (req: Request, res: Response) => {
         let requestTime = (new Date()).getTime()
-
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
         let isMore4UsersOnIp = await usersService.isMore4UsersOnIp(req.ip, requestTime)
         await requestCountService.createRequestItem(req.ip, requestTime)
-        if (isMore4UsersOnIp) {
+        let hArrLogin = arrLogin.filter((item: any) => item.date > Date.now() - 10 * 1000)
+        if (hArrLogin.length > 4) {
             res.sendStatus(429)
         } else {
+            arr.push({
+                ip: req.ip,
+                date: Date.now()
+            })
             if (user) {
                 const token = await jwtUtility.createJWT(user)
                 res.status(200).send({token: token})
@@ -157,7 +163,6 @@ authRouter.post('/registration-email-resending',
             })
         } else {
             let hArr = arr.filter((item: any) => item.date > Date.now() - 10 * 1000)
-            //let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
             if (hArr.length > 4) {
                 res.send(429)
             } else {
