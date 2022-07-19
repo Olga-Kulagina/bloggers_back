@@ -14,13 +14,11 @@ authRouter.post('/login',
     async (req: Request, res: Response) => {
         let requestTime = (new Date()).getTime()
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
-        let isMore4UsersOnIp = await usersService.isMore4UsersOnIp(req.ip, requestTime)
-        await requestCountService.createRequestItem(req.ip, requestTime)
         let hArrLogin = arrLogin.filter((item: any) => item.date > Date.now() - 10 * 1000)
         if (hArrLogin.length > 4) {
             res.sendStatus(429)
         } else {
-            arr.push({
+            arrLogin.push({
                 ip: req.ip,
                 date: Date.now()
             })
