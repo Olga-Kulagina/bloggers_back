@@ -13,19 +13,18 @@ authRouter.post('/login',
         let requestTime = (new Date()).getTime()
 
         const user = await authService.checkCredentials(req.body.login, req.body.email, req.body.password)
-        let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
+        let isMore4UsersOnIp = await usersService.isMore4UsersOnIp(req.ip, requestTime)
         await requestCountService.createRequestItem(req.ip, requestTime)
-        if (user) {
-            if (isMore5UsersOnIp) {
-                res.sendStatus(429)
-            } else {
+        if (isMore4UsersOnIp) {
+            res.sendStatus(429)
+        } else {
+            if (user) {
                 const token = await jwtUtility.createJWT(user)
                 res.status(200).send({token: token})
+            } else {
+                res.sendStatus(401)
             }
-        } else {
-            res.sendStatus(401)
         }
-
     })
 
 authRouter.post('/registration',
