@@ -22,5 +22,13 @@ export const jwtUtility = {
         } catch (error) {
             return null
         }
+    },
+    async getExpiredTime(token: string): Promise<string | null> {
+        try {
+            const result: any = jwt.verify(token, settings.JWT_SECRET)
+            return result.exp
+        } catch (error) {
+            return null
+        }
     }
 }
