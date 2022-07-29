@@ -25,9 +25,9 @@ authRouter.post('/login',
             if (user) {
                 const token = await jwtUtility.createJWT(user)
                 const refreshToken = await jwtUtility.createRefreshJWT(user)
-                res.cookie('refresh', refreshToken, { httpOnly: true,
+                res.cookie('refreshToken', refreshToken, { httpOnly: true,
                     secure: true})
-                res.status(200).send({access: token})
+                res.status(200).send({accessToken: token})
             } else {
                 res.sendStatus(401)
             }

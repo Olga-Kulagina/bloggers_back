@@ -8,6 +8,7 @@ import {authRouter} from "./routes/authRouter";
 import {commentsRouter} from "./routes/commentsRouter";
 import {testingRouter} from "./routes/testingRouter";
 import {emailRouter} from "./routes/emailRouter";
+import cookieParser from 'cookie-parser';
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -16,6 +17,7 @@ app.set('trust proxy', true)
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser());
 
 app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
