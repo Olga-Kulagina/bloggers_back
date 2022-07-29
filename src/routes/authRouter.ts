@@ -65,17 +65,22 @@ authRouter.post('/refresh-token',
             let user = {
                 id: userId as string
             }
-            if (user) {
-                const token = await jwtUtility.createJWT(user.id)
-                const newRefreshToken = await jwtUtility.createRefreshJWT(user.id)
-                res.cookie('refreshToken', newRefreshToken, {
-                    httpOnly: true,
-                    secure: true
-                })
-                await tokensRepository.updateTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
-                res.status(200).send({accessToken: token})
+            const isValid = await tokensRepository.isValidRefreshToken(user.id, refreshToken)
+            if (!isValid) {
+                res.send(401)
             } else {
-                res.sendStatus(401)
+                if (user) {
+                    const token = await jwtUtility.createJWT(user.id)
+                    const newRefreshToken = await jwtUtility.createRefreshJWT(user.id)
+                    res.cookie('refreshToken', newRefreshToken, {
+                        httpOnly: true,
+                        secure: true
+                    })
+                    await tokensRepository.updateTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
+                    res.status(200).send({accessToken: token})
+                } else {
+                    res.sendStatus(401)
+                }
             }
         }
     })

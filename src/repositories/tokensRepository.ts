@@ -15,5 +15,14 @@ export const tokensRepository = {
         const result = await tokensCollection.updateOne({userId: tokens.userId}, {$set: {userId: tokens.userId, accessToken: tokens.accessToken, refreshToken: tokens.refreshToken}})
         return tokens
     },
+    async isValidRefreshToken(id: string, token: string): Promise<boolean> {
+        const result = await tokensCollection.findOne({id: id}, {projection: {_id: 0}})
+        if (result?.refreshToken === token) {
+            return true
+        } else {
+            return false
+        }
+
+    },
 
 }
