@@ -24,8 +24,8 @@ authRouter.post('/login',
                 date: Date.now()
             })
             if (user) {
-                const token = await jwtUtility.createJWT(user)
-                const refreshToken = await jwtUtility.createRefreshJWT(user)
+                const token = await jwtUtility.createJWT(user.id)
+                const refreshToken = await jwtUtility.createRefreshJWT(user.id)
                 res.cookie('refreshToken', refreshToken, {
                     httpOnly: true,
                     secure: true
@@ -49,6 +49,31 @@ authRouter.get('/me', authBearerMiddleware,
             res.status(200).send(userData)
         } else {
             res.sendStatus(401)
+        }
+    })
+
+authRouter.get('/refresh-token',
+    async (req: Request, res: Response) => {
+        const refreshToken = req.cookies.refreshToken
+        const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
+        if (expiredTime && Date.now() / 1000 > +expiredTime) {
+            res.send(401)
+        } else {
+            const userId = await jwtUtility.getUserFromRefreshJWT(refreshToken)
+            let user = {
+                id: userId as string
+            }
+            if (user) {
+                const token = await jwtUtility.createJWT(user.id)
+                const newRefreshToken = await jwtUtility.createRefreshJWT(user.id)
+                res.cookie('refreshToken', newRefreshToken, {
+                    httpOnly: true,
+                    secure: true
+                })
+                res.status(200).send({accessToken: token})
+            } else {
+                res.sendStatus(401)
+            }
         }
     })
 
