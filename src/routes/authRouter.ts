@@ -52,7 +52,7 @@ authRouter.get('/me', authBearerMiddleware,
         }
     })
 
-authRouter.get('/refresh-token',
+authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken
         const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
