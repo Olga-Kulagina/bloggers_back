@@ -5,6 +5,7 @@ import {usersService} from "../domain/usersService";
 import {emailAdapter} from "../adapters/emailAdapter";
 import {v4} from "uuid";
 import {requestCountService} from "../domain/requestCountService";
+import {authBearerMiddleware} from "../middlewares/authBearerMiddleware";
 
 export const authRouter = Router({})
 
@@ -25,12 +26,29 @@ authRouter.post('/login',
             if (user) {
                 const token = await jwtUtility.createJWT(user)
                 const refreshToken = await jwtUtility.createRefreshJWT(user)
-                res.cookie('refreshToken', refreshToken, { httpOnly: true,
-                    secure: true})
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true,
+                    secure: true
+                })
                 res.status(200).send({accessToken: token})
             } else {
                 res.sendStatus(401)
             }
+        }
+    })
+
+authRouter.get('/me', authBearerMiddleware,
+    async (req: Request, res: Response) => {
+        let user = await usersService.findByLoginOrEmail(req.user.login)
+        if (user) {
+            let userData = {
+                email: user.accountData.email,
+                login: user.accountData.userName,
+                userId: user.id,
+            }
+            res.status(200).send(userData)
+        } else {
+            res.sendStatus(401)
         }
     })
 
