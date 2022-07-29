@@ -7,6 +7,7 @@ import {CommentType} from "./commentsRepository";
 import {RequestItemType} from "./requestCountRepository";
 import {requestCountService} from "../domain/requestCountService";
 import {usersService} from "../domain/usersService";
+import {UsersTokensType} from "./tokensRepository";
 
 export const client = new MongoClient(settings.MONGO_URI)
 export const db = client.db("youtube")
@@ -15,6 +16,7 @@ export const postsCollection = db.collection<PostType>("posts")
 export const usersCollection = db.collection<UserDBType>("users")
 export const commentsCollection = db.collection<CommentType>("comments")
 export const requestCountCollection = db.collection<RequestItemType>("requestCount")
+export const tokensCollection = db.collection<UsersTokensType>("tokens")
 
 export async function runDb() {
     try {

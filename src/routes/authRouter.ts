@@ -6,6 +6,7 @@ import {emailAdapter} from "../adapters/emailAdapter";
 import {v4} from "uuid";
 import {requestCountService} from "../domain/requestCountService";
 import {authBearerMiddleware} from "../middlewares/authBearerMiddleware";
+import {tokensRepository} from "../repositories/tokensRepository";
 
 export const authRouter = Router({})
 
@@ -30,6 +31,7 @@ authRouter.post('/login',
                     httpOnly: true,
                     secure: true
                 })
+                await tokensRepository.createTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
                 res.status(200).send({accessToken: token})
             } else {
                 res.sendStatus(401)
@@ -70,12 +72,28 @@ authRouter.post('/refresh-token',
                     httpOnly: true,
                     secure: true
                 })
+                await tokensRepository.updateTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
                 res.status(200).send({accessToken: token})
             } else {
                 res.sendStatus(401)
             }
         }
     })
+
+authRouter.post('/logout',
+    async (req: Request, res: Response) => {
+        const refreshToken = req.cookies.refreshToken
+        if (!refreshToken) {
+            res.send(401)
+        } else {
+            const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
+            if (expiredTime && Date.now() / 1000 > +expiredTime) {
+                res.send(401)
+            }
+        }
+        res.sendStatus(204)
+    }
+)
 
 authRouter.post('/registration',
     async (req: Request, res: Response) => {
@@ -149,7 +167,6 @@ authRouter.post('/registration-confirmation',
                 }]
             })
         } else if (userWithCode.emailConfirmation.isConfirmed) {
-            console.log("sssss")
             res.status(400).send({
                 errorsMessages: [{
                     "message": "Юзер с таким code уже подтвержден",
