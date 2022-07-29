@@ -8,7 +8,7 @@ export const jwtUtility = {
      * @return Returns JWT-token
      */
     async createJWT(user: UserDBType) {
-        const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '10000s'})
+        const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '10s'})
         return token
     },
     async createRefreshJWT(user: UserDBType) {
