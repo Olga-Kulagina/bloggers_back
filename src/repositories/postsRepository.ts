@@ -6,7 +6,7 @@ export type PostType = {
     shortDescription: string
     content: string
     bloggerId: string
-    bloggerName: string
+    blogName: string
 }
 
 export type GetPostType = {
@@ -63,8 +63,8 @@ export const postsRepository = {
         const result = await postsCollection.insertOne(newPost)
         return newPost
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({id: id}, {$set: {title: title, shortDescription: shortDescription, content: content, bloggerId: bloggerId, bloggerName: bloggerName}})
+    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, blogName: string): Promise<boolean> {
+        const result = await postsCollection.updateOne({id: id}, {$set: {title: title, shortDescription: shortDescription, content: content, bloggerId: bloggerId, blogName: blogName}})
         return result.matchedCount === 1
     },
     async deletePost(id?: string): Promise<boolean> {

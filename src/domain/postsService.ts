@@ -14,11 +14,11 @@ export const postsService = {
     },
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | null> {
         const blogger = await bloggersRepository.findBloggerById(bloggerId)
-        let bloggerName
+        let blogName
         if (blogger) {
-            bloggerName = blogger.name
+            blogName = blogger.name
         } else {
-            bloggerName = ""
+            blogName = ""
         }
         const newPost = {
             id: `${+(new Date())}`,
@@ -26,7 +26,7 @@ export const postsService = {
             shortDescription: shortDescription,
             content: content,
             bloggerId: bloggerId,
-            bloggerName: bloggerName,
+            blogName: blogName,
         }
         const createdPost = await postsRepository.createPost(newPost)
         let post = await postsRepository.findPostById(createdPost.id)
@@ -34,13 +34,13 @@ export const postsService = {
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
         const blogger = await bloggersRepository.findBloggerById(bloggerId)
-        let bloggerName
+        let blogName
         if (blogger) {
-            bloggerName = blogger.name
+            blogName = blogger.name
         } else {
-            bloggerName = ""
+            blogName = ""
         }
-        const result = await postsRepository.updatePost(id, title, shortDescription, content, bloggerId, bloggerName)
+        const result = await postsRepository.updatePost(id, title, shortDescription, content, bloggerId, blogName)
         return result
     },
     async deletePost(id: string): Promise<boolean> {

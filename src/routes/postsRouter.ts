@@ -18,7 +18,7 @@ let posts = [
         shortDescription: "Back-end Путь Самурая",
         content: "https://www.youtube.com/watch?v=cHVhpNrjcPs",
         bloggerId: 1,
-        bloggerName: "IT-KAMASUTRA"
+        blogName: "IT-KAMASUTRA"
     },
     {
         id: 2,
@@ -26,7 +26,7 @@ let posts = [
         shortDescription: "Back-end Путь Самурая",
         content: "https://www.youtube.com/watch?v=ugfE0ttbstQ",
         bloggerId: 1,
-        bloggerName: "IT-KAMASUTRA"
+        blogName: "IT-KAMASUTRA"
     },
     {
         id: 3,
@@ -34,7 +34,7 @@ let posts = [
         shortDescription: "Кругом проблемы: семья, отношения, начальник дурак, работник козел...",
         content: "https://www.youtube.com/watch?v=DSl2Mkcynys&t=12090s",
         bloggerId: 2,
-        bloggerName: "Egor Malkevich"
+        blogName: "Egor Malkevich"
     },
     {
         id: 4,
@@ -42,7 +42,7 @@ let posts = [
         shortDescription: "В этом ролике мы посмотрим новые фичи React 18",
         content: "https://www.youtube.com/watch?v=qdCGwwSefX8&t=881s",
         bloggerId: 3,
-        bloggerName: "Ulbi TV"
+        blogName: "Ulbi TV"
     },
     {
         id: 5,
@@ -50,7 +50,7 @@ let posts = [
         shortDescription: "Самые честные новости",
         content: "https://www.youtube.com/watch?v=H-C3ECu8b14",
         bloggerId: 5,
-        bloggerName: "Артемий Лебедев"
+        blogName: "Артемий Лебедев"
     },
 ]
 

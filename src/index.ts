@@ -20,7 +20,7 @@ app.use(express.json())
 app.use(cookieParser());
 
 app.use('/auth', authRouter)
-app.use('/bloggers', bloggersRouter)
+app.use('/blogs', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)

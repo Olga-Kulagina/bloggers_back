@@ -19,25 +19,25 @@ bloggersRouter.get('/', async (req: Request, res: Response) => {
     const foundBloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString(), req.query.PageNumber?.toString(), req.query.PageSize?.toString())
     res.send(foundBloggers)
 })
-bloggersRouter.get('/:bloggerId', async (req: Request, res: Response) => {
-    let foundBlogger = await bloggersService.findBloggerById(req.params.bloggerId)
+bloggersRouter.get('/:blogId', async (req: Request, res: Response) => {
+    let foundBlogger = await bloggersService.findBloggerById(req.params.blogId)
     if (foundBlogger) {
         res.send(foundBlogger)
     } else {
         res.send(404)
     }
 })
-bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
-    let foundPosts = await postsService.findPostsByBloggerId(req.params.bloggerId, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
+bloggersRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
+    let foundPosts = await postsService.findPostsByBloggerId(req.params.blogId, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
     if (foundPosts) {
         res.send(foundPosts)
     } else {
         res.send(404)
     }
 })
-bloggersRouter.post('/:bloggerId/posts', async (req: Request, res: Response) => {
+bloggersRouter.post('/:blogId/posts', async (req: Request, res: Response) => {
     let errorMessages = []
-    const id = req.params.bloggerId
+    const id = req.params.blogId
     const isBloggerExist = await bloggersService.findBloggerById(id)
     if (!isBloggerExist) {
         res.send(404)
@@ -90,9 +90,9 @@ bloggersRouter.post('/', async (req: Request, res: Response) => {
         res.status(201).send(newBlogger)
     }
 })
-bloggersRouter.put('/:bloggerId', async (req: Request, res: Response) => {
+bloggersRouter.put('/:blogId', async (req: Request, res: Response) => {
     let errorMessages = []
-    const id = req.params.bloggerId
+    const id = req.params.blogId
     const blogger = await bloggersService.findBloggerById(id)
     if (!blogger) {
         res.send(404)
@@ -113,13 +113,13 @@ bloggersRouter.put('/:bloggerId', async (req: Request, res: Response) => {
         if (errorMessages.length > 0) {
             res.status(400).send(error(errorMessages))
         } else {
-            let result = await bloggersService.updateBlogger(req.params.bloggerId, req.body.name, req.body.youtubeUrl)
+            let result = await bloggersService.updateBlogger(req.params.blogId, req.body.name, req.body.youtubeUrl)
             res.send(204)
         }
     }
 })
-bloggersRouter.delete('/:bloggerId', async (req: Request, res: Response) => {
-    const id = req.params.bloggerId
+bloggersRouter.delete('/:blogId', async (req: Request, res: Response) => {
+    const id = req.params.blogId
     const isBloggerExist = await bloggersService.findBloggerById(id)
     if (isBloggerExist) {
         const result = await bloggersService.deleteBlogger(id)
