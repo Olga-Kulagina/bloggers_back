@@ -1,4 +1,5 @@
 import {bloggersRepository, BloggerType, GetBloggerType} from "../repositories/bloggersRepository";
+import {formatISO} from "date-fns";
 
 export const bloggersService = {
     async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetBloggerType> {
@@ -12,6 +13,7 @@ export const bloggersService = {
             id: `${+(new Date())}`,
             name: name,
             youtubeUrl: youtubeUrl,
+            createdAt: formatISO(new Date())
         }
         const createdBlogger = await bloggersRepository.createBlogger(newBlogger)
         let blogger = await bloggersRepository.findBloggerById(createdBlogger.id)

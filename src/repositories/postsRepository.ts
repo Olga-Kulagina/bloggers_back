@@ -5,7 +5,7 @@ export type PostType = {
     title: string
     shortDescription: string
     content: string
-    bloggerId: string
+    blogId: string
     blogName: string
 }
 
@@ -39,8 +39,8 @@ export const postsRepository = {
     async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType | null> {
         let a = PageNumber || 1
         let b = PageSize || 10
-        let totalCount = await postsCollection.count({bloggerId: id})
-        let items = await postsCollection.find({bloggerId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        let totalCount = await postsCollection.count({blogId: id})
+        let items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
         if (items.length > 0) {
             return {
@@ -63,8 +63,8 @@ export const postsRepository = {
         const result = await postsCollection.insertOne(newPost)
         return newPost
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, blogName: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({id: id}, {$set: {title: title, shortDescription: shortDescription, content: content, bloggerId: bloggerId, blogName: blogName}})
+    async updatePost(id: string, title: string, shortDescription: string, content: string, blogId: string, blogName: string): Promise<boolean> {
+        const result = await postsCollection.updateOne({id: id}, {$set: {title: title, shortDescription: shortDescription, content: content, blogId: blogId, blogName: blogName}})
         return result.matchedCount === 1
     },
     async deletePost(id?: string): Promise<boolean> {

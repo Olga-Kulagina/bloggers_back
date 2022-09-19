@@ -12,8 +12,8 @@ export const postsService = {
     async findPostById(id: string): Promise<PostType | null> {
         return postsRepository.findPostById(id)
     },
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | null> {
-        const blogger = await bloggersRepository.findBloggerById(bloggerId)
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostType | null> {
+        const blogger = await bloggersRepository.findBloggerById(blogId)
         let blogName
         if (blogger) {
             blogName = blogger.name
@@ -25,22 +25,22 @@ export const postsService = {
             title: title,
             shortDescription: shortDescription,
             content: content,
-            bloggerId: bloggerId,
+            blogId: blogId,
             blogName: blogName,
         }
         const createdPost = await postsRepository.createPost(newPost)
         let post = await postsRepository.findPostById(createdPost.id)
         return post
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
-        const blogger = await bloggersRepository.findBloggerById(bloggerId)
+    async updatePost(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise<boolean> {
+        const blogger = await bloggersRepository.findBloggerById(blogId)
         let blogName
         if (blogger) {
             blogName = blogger.name
         } else {
             blogName = ""
         }
-        const result = await postsRepository.updatePost(id, title, shortDescription, content, bloggerId, blogName)
+        const result = await postsRepository.updatePost(id, title, shortDescription, content, blogId, blogName)
         return result
     },
     async deletePost(id: string): Promise<boolean> {

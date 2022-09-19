@@ -17,7 +17,7 @@ let posts = [
         title: "01 - Введение / Back-end - Путь Самурая",
         shortDescription: "Back-end Путь Самурая",
         content: "https://www.youtube.com/watch?v=cHVhpNrjcPs",
-        bloggerId: 1,
+        blogId: 1,
         blogName: "IT-KAMASUTRA"
     },
     {
@@ -25,7 +25,7 @@ let posts = [
         title: "02 - front-end vs back-end, что выбрать / Back-end - Путь Самурая",
         shortDescription: "Back-end Путь Самурая",
         content: "https://www.youtube.com/watch?v=ugfE0ttbstQ",
-        bloggerId: 1,
+        blogId: 1,
         blogName: "IT-KAMASUTRA"
     },
     {
@@ -33,7 +33,7 @@ let posts = [
         title: "Поговорим за жизнь",
         shortDescription: "Кругом проблемы: семья, отношения, начальник дурак, работник козел...",
         content: "https://www.youtube.com/watch?v=DSl2Mkcynys&t=12090s",
-        bloggerId: 2,
+        blogId: 2,
         blogName: "Egor Malkevich"
     },
     {
@@ -41,7 +41,7 @@ let posts = [
         title: "НОВЫЙ REACT 18 ВЫШЕЛ",
         shortDescription: "В этом ролике мы посмотрим новые фичи React 18",
         content: "https://www.youtube.com/watch?v=qdCGwwSefX8&t=881s",
-        bloggerId: 3,
+        blogId: 3,
         blogName: "Ulbi TV"
     },
     {
@@ -49,7 +49,7 @@ let posts = [
         title: "Грибы научились разговаривать / Найдены штаны 3000-летней давности / Дровосеки отжали лося у медведя",
         shortDescription: "Самые честные новости",
         content: "https://www.youtube.com/watch?v=H-C3ECu8b14",
-        bloggerId: 5,
+        blogId: 5,
         blogName: "Артемий Лебедев"
     },
 ]
@@ -68,12 +68,12 @@ postsRouter.get('/:postId', async (req: Request, res: Response) => {
 })
 postsRouter.post('/', authBasicMiddleware, async (req: Request, res: Response) => {
     let errorMessages = []
-    const id = req.body.bloggerId
+    const id = req.body.blogId
     const isBloggerExist = await bloggersService.findBloggerById(id)
     if (!isBloggerExist) {
         errorMessages.push({
-            "message": "Некорректно указано bloggerId",
-            "field": "bloggerId",
+            "message": "Некорректно указано blogId",
+            "field": "blogId",
         })
     }
     if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
@@ -97,7 +97,7 @@ postsRouter.post('/', authBasicMiddleware, async (req: Request, res: Response) =
     if (errorMessages.length > 0) {
         res.status(400).send(error(errorMessages))
     } else {
-        let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
+        let newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
         res.status(201).send(newPost)
     }
 })
@@ -108,11 +108,11 @@ postsRouter.put('/:postId', authBasicMiddleware, async (req: Request, res: Respo
     if (!isPostExist) {
         res.send(404)
     } else {
-        const isBloggerExist = await bloggersService.findBloggerById(req.body.bloggerId)
+        const isBloggerExist = await bloggersService.findBloggerById(req.body.blogId)
         if (!isBloggerExist) {
             errorMessages.push({
-                "message": "Некорректно указано bloggerId",
-                "field": "bloggerId",
+                "message": "Некорректно указано blogId",
+                "field": "blogId",
             })
         }
         if (!req.body.title || !req.body.title.trim() || req.body.title.length > 30) {
@@ -136,7 +136,7 @@ postsRouter.put('/:postId', authBasicMiddleware, async (req: Request, res: Respo
         if (errorMessages.length > 0) {
             res.status(400).send(error(errorMessages))
         } else {
-            let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
+            let result = await postsService.updatePost(id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
             res.send(204)
         }
     }
