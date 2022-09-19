@@ -27,6 +27,7 @@ export const postsService = {
             content: content,
             blogId: blogId,
             blogName: blogName,
+            createdAt: (new Date()).toISOString()
         }
         const createdPost = await postsRepository.createPost(newPost)
         let post = await postsRepository.findPostById(createdPost.id)

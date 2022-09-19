@@ -13,7 +13,7 @@ export const bloggersService = {
             id: `${+(new Date())}`,
             name: name,
             youtubeUrl: youtubeUrl,
-            createdAt: formatISO(new Date())
+            createdAt: (new Date()).toISOString()
         }
         const createdBlogger = await bloggersRepository.createBlogger(newBlogger)
         let blogger = await bloggersRepository.findBloggerById(createdBlogger.id)
