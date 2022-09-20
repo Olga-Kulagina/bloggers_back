@@ -29,8 +29,7 @@ app.use('/email', emailRouter)
 
 export const error = (errorMessages: Array<{ field: string, message: string }>) => {
     return {
-        "errorsMessages": errorMessages,
-        "resultCode": 1
+        errorsMessages: errorMessages
     }
 }
 
