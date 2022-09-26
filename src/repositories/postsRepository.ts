@@ -41,13 +41,15 @@ export const postsRepository = {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({blogId: id})
+
+        let sortingValue = sortBy || "createdAt"
         let items
         if (sortBy && sortDirection === "asc") {
-            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
         } else if (sortBy && sortDirection === "desc") {
-            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         } else {
-            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         }
 
         if (items.length > 0 && PageSize) {
