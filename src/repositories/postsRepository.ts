@@ -47,7 +47,7 @@ export const postsRepository = {
         } else if (sortBy && sortDirection === "desc") {
             items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         } else {
-            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         }
 
         if (items.length > 0) {
