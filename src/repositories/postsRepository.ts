@@ -65,9 +65,9 @@ export const postsRepository = {
             }
         } else if (items.length > 0) {
             return {
-                "pagesCount": Math.ceil(totalCount/+3),
+                "pagesCount": Math.ceil(totalCount/+b),
                 "page": +a,
-                "pageSize": +3,
+                "pageSize": +b,
                 "totalCount": totalCount,
                 "items": items
             }
