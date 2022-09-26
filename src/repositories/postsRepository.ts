@@ -19,7 +19,7 @@ export type GetPostType = {
 }
 
 export const postsRepository = {
-    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType> {
+    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetPostType> {
         const filter: any = {}
         if (title) {
             filter.name = {$regex: title}
@@ -30,14 +30,14 @@ export const postsRepository = {
         let items = await postsCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
 
         return {
-            "pagesCount": Math.ceil(totalCount/+b),
+            "pagesCount": Math.ceil(totalCount / +b),
             "page": +a,
             "pageSize": +b,
             "totalCount": totalCount,
             "items": items
         }
     },
-    async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType | null> {
+    async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined, PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType | null> {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({blogId: id})
@@ -47,25 +47,20 @@ export const postsRepository = {
         } else if (sortBy && sortDirection === "desc") {
             items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         } else {
-            if (PageSize) {
-                items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +PageSize).limit(+PageSize).toArray()
-            } else {
-                items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +b).limit(+b).toArray()
-            }
-
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         }
 
         if (items.length > 0 && PageSize) {
             return {
-                "pagesCount": Math.ceil(totalCount/+PageSize),
+                "pagesCount": Math.ceil(totalCount / +b),
                 "page": +a,
-                "pageSize": +PageSize,
+                "pageSize": +b,
                 "totalCount": totalCount,
                 "items": items
             }
         } else if (items.length > 0) {
             return {
-                "pagesCount": Math.ceil(totalCount/+b),
+                "pagesCount": Math.ceil(totalCount / +b),
                 "page": +a,
                 "pageSize": +b,
                 "totalCount": totalCount,
@@ -85,7 +80,15 @@ export const postsRepository = {
         return newPost
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, blogId: string, blogName: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({id: id}, {$set: {title: title, shortDescription: shortDescription, content: content, blogId: blogId, blogName: blogName}})
+        const result = await postsCollection.updateOne({id: id}, {
+            $set: {
+                title: title,
+                shortDescription: shortDescription,
+                content: content,
+                blogId: blogId,
+                blogName: blogName
+            }
+        })
         return result.matchedCount === 1
     },
     async deletePost(id?: string): Promise<boolean> {

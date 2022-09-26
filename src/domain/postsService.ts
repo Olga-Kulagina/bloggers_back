@@ -53,7 +53,6 @@ export const postsService = {
         return result
     },
     async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined, PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType | null> {
-        console.log(PageSize)
         return await postsRepository.findPostsByBloggerId(id, PageNumber, PageSize, sortBy, sortDirection)
     }
 }

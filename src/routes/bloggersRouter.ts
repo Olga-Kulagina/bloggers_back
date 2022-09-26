@@ -28,7 +28,7 @@ bloggersRouter.get('/:blogId', async (req: Request, res: Response) => {
     }
 })
 bloggersRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
-    let foundPosts = await postsService.findPostsByBloggerId(req.params.blogId, req.query.PageNumber?.toString(), req.query.PageSize?.toString(), req.query.sortBy?.toString(), req.query.sortDirection?.toString())
+    let foundPosts = await postsService.findPostsByBloggerId(req.params.blogId, req.query.pageNumber?.toString(), req.query.pageSize?.toString(), req.query.sortBy?.toString(), req.query.sortDirection?.toString())
     if (foundPosts) {
         res.send(foundPosts)
     } else {
