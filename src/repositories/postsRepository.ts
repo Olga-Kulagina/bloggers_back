@@ -37,11 +37,18 @@ export const postsRepository = {
             "items": items
         }
     },
-    async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetPostType | null> {
+    async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType | null> {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({blogId: id})
-        let items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        let items
+        if (sortBy && sortDirection === "asc") {
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
+        } else if (sortBy && sortDirection === "desc") {
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+        } else {
+            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        }
 
         if (items.length > 0) {
             return {
