@@ -38,8 +38,9 @@ export const postsRepository = {
         }
     },
     async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType | null> {
+        console.log(PageSize)
         let a = PageNumber || 1
-        let b = PageSize || 10
+        let b = PageSize || 4
         let totalCount = await postsCollection.count({blogId: id})
         let items
         if (sortBy && sortDirection === "asc") {
