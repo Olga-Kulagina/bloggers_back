@@ -38,7 +38,6 @@ export const postsRepository = {
         }
     },
     async findPostsByBloggerId(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType | null> {
-        console.log(PageSize)
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({blogId: id})
@@ -48,10 +47,23 @@ export const postsRepository = {
         } else if (sortBy && sortDirection === "desc") {
             items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({[sortBy]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         } else {
-            items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +3).limit(+3).toArray()
+            if (PageSize) {
+                items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +PageSize).limit(+PageSize).toArray()
+            } else {
+                items = await postsCollection.find({blogId: id}, {projection: {_id: 0}}).sort({createdAt: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+            }
+
         }
 
-        if (items.length > 0) {
+        if (items.length > 0 && PageSize) {
+            return {
+                "pagesCount": Math.ceil(totalCount/+PageSize),
+                "page": +a,
+                "pageSize": +PageSize,
+                "totalCount": totalCount,
+                "items": items
+            }
+        } else if (items.length > 0) {
             return {
                 "pagesCount": Math.ceil(totalCount/+3),
                 "page": +a,
