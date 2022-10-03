@@ -19,7 +19,7 @@ export const bloggersRepository = {
     async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetBloggerType> {
         const filter: any = {}
         if (SearchNameTerm) {
-            filter.name = {$regex: SearchNameTerm}
+            filter.name = {$regex: SearchNameTerm, $options : "i"}
         }
         let a = PageNumber || 1
         let b = PageSize || 10
