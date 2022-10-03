@@ -16,7 +16,7 @@ export let bloggers = [
 ]
 
 bloggersRouter.get('/', async (req: Request, res: Response) => {
-    const foundBloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString(), req.query.pageNumber?.toString(), req.query.pageSize?.toString(), req.query.sortBy?.toString(), req.query.sortDirection?.toString())
+    const foundBloggers = await bloggersService.findBloggers(req.query.searchNameTerm?.toString(), req.query.pageNumber?.toString(), req.query.pageSize?.toString(), req.query.sortBy?.toString(), req.query.sortDirection?.toString())
     res.send(foundBloggers)
 })
 bloggersRouter.get('/:blogId', async (req: Request, res: Response) => {
