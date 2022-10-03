@@ -16,7 +16,7 @@ export type GetBloggerType = {
 }
 
 export const bloggersRepository = {
-    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetBloggerType> {
+    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetBloggerType> {
         const filter: any = {}
         if (SearchNameTerm) {
             filter.name = {$regex: SearchNameTerm}
@@ -24,7 +24,14 @@ export const bloggersRepository = {
         let a = PageNumber || 1
         let b = PageSize || 10
         let bloggers = await bloggersCollection.find(filter, {projection: {_id: 0}}).toArray()
-        let items = await bloggersCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+
+        let sortingValue = sortBy || "createdAt"
+        let items
+        if (sortDirection === "asc") {
+            items = await bloggersCollection.find(filter, {projection: {_id: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
+        } else {
+            items = await bloggersCollection.find(filter, {projection: {_id: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+        }
 
         return {
             "pagesCount": Math.ceil(bloggers.length/+b),

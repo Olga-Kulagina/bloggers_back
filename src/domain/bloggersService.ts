@@ -2,8 +2,8 @@ import {bloggersRepository, BloggerType, GetBloggerType} from "../repositories/b
 import {formatISO} from "date-fns";
 
 export const bloggersService = {
-    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetBloggerType> {
-        return bloggersRepository.findBloggers(SearchNameTerm, PageNumber, PageSize)
+    async findBloggers(SearchNameTerm: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetBloggerType> {
+        return bloggersRepository.findBloggers(SearchNameTerm, PageNumber, PageSize, sortBy, sortDirection)
     },
     async findBloggerById(id: string): Promise<BloggerType | null> {
         return bloggersRepository.findBloggerById(id)
