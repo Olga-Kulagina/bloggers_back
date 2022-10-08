@@ -8,7 +8,9 @@ export const usersRouter = Router({})
 usersRouter.use(authBasicMiddleware)
 
 usersRouter.get('/', async (req: Request, res: Response) => {
-    const foundUsers = await usersService.findUsers(req.query.PageNumber?.toString(), req.query.PageSize?.toString())
+    const foundUsers = await usersService.findUsers(req.query.searchLoginTerm?.toString(),
+        req.query.searchEmailTerm?.toString(), req.query.pageNumber?.toString(), req.query.pageSize?.toString(),
+        req.query.sortBy?.toString(), req.query.sortDirection?.toString())
     res.send(foundUsers)
 })
 usersRouter.post('/', async (req: Request, res: Response) => {

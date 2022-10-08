@@ -8,8 +8,10 @@ import {emailAdapter} from "../adapters/emailAdapter";
 
 
 export const usersService = {
-    async findUsers(PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetUserType> {
-        return usersRepository.findUsers(PageNumber, PageSize)
+    async findUsers(searchLoginTerm?: string | null | undefined, searchEmailTerm?: string | null | undefined,
+                    pageNumber?: string | null | undefined, pageSize?: string | null | undefined,
+                    sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetUserType> {
+        return usersRepository.findUsers(searchLoginTerm, searchEmailTerm, pageNumber, pageSize, sortBy, sortDirection)
     },
     async findUserById(id: string): Promise<UserType | null> {
         return usersRepository.findUserById(id)
