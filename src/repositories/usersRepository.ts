@@ -38,8 +38,7 @@ export const usersRepository = {
         } else {
             items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         }
-
-       // let items = await usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        
         let users: Array<UserType> = []
         if (items.length > 0) {
             users = items.map(u => ({id: u.id, login: u.accountData.userName, email: u.accountData.email, createdAt: u.accountData.createdAt}))

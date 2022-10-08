@@ -8,7 +8,7 @@ export type CommentType = {
     content: string
     userId: string
     userLogin: string
-    addedAt: string
+    createdAt: string
 }
 
 export type GetCommentsType = {
