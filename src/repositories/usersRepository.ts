@@ -34,9 +34,9 @@ export const usersRepository = {
         let sortingValue = sortBy || "createdAt"
         let items
         if (sortDirection === "asc") {
-            items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
+            items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
         } else {
-            items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+            items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         }
 
        // let items = await usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, createdAt: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
