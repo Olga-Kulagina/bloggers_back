@@ -31,7 +31,7 @@ export const usersRepository = {
         let b = pageSize || 10
         let totalCount = await usersCollection.count({})
 
-        let sortingValue = sortBy || "createdAt"
+        let sortingValue = sortBy || "accountData.createdAt"
         let items
         if (sortDirection === "asc") {
             items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
