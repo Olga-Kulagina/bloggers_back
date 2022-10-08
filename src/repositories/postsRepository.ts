@@ -1,4 +1,4 @@
-import {postsCollection} from "./db";
+import {bloggersCollection, postsCollection} from "./db";
 
 export type PostType = {
     id: string
@@ -19,7 +19,7 @@ export type GetPostType = {
 }
 
 export const postsRepository = {
-    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetPostType> {
+    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType> {
         const filter: any = {}
         if (title) {
             filter.name = {$regex: title}
@@ -27,7 +27,13 @@ export const postsRepository = {
         let a = PageNumber || 1
         let b = PageSize || 10
         let totalCount = await postsCollection.count({})
-        let items = await postsCollection.find(filter, {projection: {_id: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+        let sortingValue = sortBy || "createdAt"
+        let items
+        if (sortDirection === "asc") {
+            items = await postsCollection.find(filter, {projection: {_id: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
+        } else {
+            items = await postsCollection.find(filter, {projection: {_id: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+        }
 
         return {
             "pagesCount": Math.ceil(totalCount / +b),

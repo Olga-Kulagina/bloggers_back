@@ -6,8 +6,8 @@ import {formatISO} from 'date-fns'
 import {oldUserDBType} from "../repositories/types";
 
 export const postsService = {
-    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetPostType> {
-        return postsRepository.findPosts(title, PageNumber, PageSize)
+    async findPosts(title: string | null | undefined, PageNumber?: string | null | undefined, PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetPostType> {
+        return postsRepository.findPosts(title, PageNumber, PageSize, sortBy, sortDirection)
     },
     async findPostById(id: string): Promise<PostType | null> {
         return postsRepository.findPostById(id)

@@ -55,7 +55,7 @@ let posts = [
 ]
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const posts = await postsService.findPosts(req.query.title?.toString(), req.query.PageNumber?.toString(), req.query.PageSize?.toString())
+    const posts = await postsService.findPosts(req.query.title?.toString(), req.query.pageNumber?.toString(), req.query.pageSize?.toString(), req.query.sortBy?.toString(), req.query.sortDirection?.toString())
     res.send(posts)
 })
 postsRouter.get('/:postId', async (req: Request, res: Response) => {
