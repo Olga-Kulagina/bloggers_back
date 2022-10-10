@@ -53,7 +53,7 @@ export const usersRepository = {
             "pagesCount": Math.ceil(totalCount/+b),
             "page": +a,
             "pageSize": +b,
-            "totalCount": items.length,
+            "totalCount": searchLoginTerm && searchEmailTerm ? users.length : totalCount,
             "items": users
         }
     },
