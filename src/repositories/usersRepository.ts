@@ -15,18 +15,19 @@ export type GetUserType = {
     totalCount: number
     items: Array<UserType>
 }
-// searchLoginTerm, searchEmailTerm, pageNumber, pageSize, sortBy, sortDirection
+
 export const usersRepository = {
     async findUsers(searchLoginTerm?: string | null | undefined, searchEmailTerm?: string | null | undefined,
                     pageNumber?: string | null | undefined, pageSize?: string | null | undefined,
                     sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetUserType> {
         const filter: any = {}
         if (searchLoginTerm) {
-            filter.login = {$regex: searchLoginTerm, $options : "i"}
+            filter["accountData.userName"] = {$regex: searchLoginTerm, $options : "i"}
         }
         if (searchEmailTerm) {
-            filter.email = {$regex: searchEmailTerm, $options : "i"}
+            filter["accountData.email"] = {$regex: searchEmailTerm, $options : "i"}
         }
+
         let a = pageNumber || 1
         let b = pageSize || 10
         let totalCount = await usersCollection.count({})
@@ -38,7 +39,7 @@ export const usersRepository = {
         } else {
             items = await usersCollection.find(filter, {projection: {_id: 0, passwordHash: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
         }
-        
+
         let users: Array<UserType> = []
         if (items.length > 0) {
             users = items.map(u => ({id: u.id, login: u.accountData.userName, email: u.accountData.email, createdAt: u.accountData.createdAt}))

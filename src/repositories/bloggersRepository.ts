@@ -21,6 +21,7 @@ export const bloggersRepository = {
         if (SearchNameTerm) {
             filter.name = {$regex: SearchNameTerm, $options : "i"}
         }
+        console.log(filter)
         let a = PageNumber || 1
         let b = PageSize || 10
         let bloggers = await bloggersCollection.find(filter, {projection: {_id: 0}}).toArray()
