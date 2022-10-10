@@ -23,11 +23,11 @@ export const usersRepository = {
         let filter: any = {}
         if (searchLoginTerm && searchEmailTerm) {
             filter = {
-                $or: [{'accountData.userName': {'$regex': 'log', '$options': 'i'}},
+                $or: [{'accountData.login': {'$regex': 'log', '$options': 'i'}},
                     {'accountData.email': {'$regex': 'gg', '$options': 'i'}}]
             }
         } else if (searchLoginTerm) {
-            filter["accountData.userName"] = {$regex: searchLoginTerm, $options : "i"}
+            filter["accountData.login"] = {$regex: searchLoginTerm, $options : "i"}
         } else if (searchEmailTerm) {
             filter["accountData.email"] = {$regex: searchEmailTerm, $options : "i"}
         }
@@ -46,7 +46,7 @@ export const usersRepository = {
 
         let users: Array<UserType> = []
         if (items.length > 0) {
-            users = items.map(u => ({id: u.id, login: u.accountData.userName, email: u.accountData.email, createdAt: u.accountData.createdAt}))
+            users = items.map(u => ({id: u.id, login: u.accountData.login, email: u.accountData.email, createdAt: u.accountData.createdAt}))
         }
 
         return {
@@ -60,13 +60,13 @@ export const usersRepository = {
     async findUserById(id: string): Promise<UserType | null> {
         let userDB = await usersCollection.findOne({id: id}, {projection: {_id: 0}})
         if (userDB) {
-            let user = {id: userDB.id, login: userDB.accountData.userName}
+            let user = {id: userDB.id, login: userDB.accountData.login}
             return user
         }
         return null
     },
     async findByLoginOrEmail(login: string, email?: string): Promise<UserDBType | null> {
-        let user = await usersCollection.findOne( {$or : [{"accountData.userName": login}, {"accountData.email": email}]}, {projection: {_id: 0}})
+        let user = await usersCollection.findOne( {$or : [{"accountData.login": login}, {"accountData.email": email}]}, {projection: {_id: 0}})
         return user
     },
     async findUserByConfirmationCode(code: string): Promise<UserDBType | null> {

@@ -45,7 +45,7 @@ authRouter.get('/me', authBearerMiddleware,
         if (user) {
             let userData = {
                 email: user.accountData.email,
-                login: user.accountData.userName,
+                login: user.accountData.login,
                 userId: user.id,
             }
             res.status(200).send(userData)
@@ -130,7 +130,7 @@ authRouter.post('/registration',
             let user = await usersService.findByLoginOrEmail(req.body.login, req.body.email)
             let isMore5UsersOnIp = await usersService.isMore5UsersOnIp(req.ip, requestTime)
             if (user) {
-                if (user.accountData.userName === req.body.login) {
+                if (user.accountData.login === req.body.login) {
                     errorMessages.push({
                         "message": "Некорректно указано login",
                         "field": "login",

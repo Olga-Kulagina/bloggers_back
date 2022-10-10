@@ -43,7 +43,7 @@ export const usersService = {
             _id: new ObjectId(),
             id: `${+(new Date())}`,
             accountData: {
-                userName: login,
+                login: login,
                 email,
                 passwordHash,
                 createdAt: new Date(),
@@ -60,7 +60,7 @@ export const usersService = {
         }
         const createdUser = await usersRepository.createUser(newUser)
         await emailAdapter.emailSend(email, "Регистрация", `http://localhost:5000/auth/registration-confirmation?code=${createdUser.emailConfirmation.confirmationCode}`)
-        let user = {id: createdUser.id, login: createdUser.accountData.userName, email: createdUser.accountData.email, createdAt: createdUser.accountData.createdAt}
+        let user = {id: createdUser.id, login: createdUser.accountData.login, email: createdUser.accountData.email, createdAt: createdUser.accountData.createdAt}
         return user
     },
     async deleteUser(id: string): Promise<boolean> {

@@ -10,7 +10,7 @@ export type oldUserDBType = WithId<{
 export type UserDBType = WithId<{
     id: string
     accountData: {
-        userName: string
+        login: string
         email: string
         passwordHash: string
         createdAt: Date
