@@ -23,7 +23,7 @@ export const usersRepository = {
         let filter: any = {}
         if (searchLoginTerm && searchEmailTerm) {
             filter = {
-                $or: [{'accountData.login': {'$regex': 'log', '$options': 'i'}},
+                $and: [{'accountData.login': {'$regex': 'log', '$options': 'i'}},
                     {'accountData.email': {'$regex': 'gg', '$options': 'i'}}]
             }
         } else if (searchLoginTerm) {
