@@ -20,11 +20,15 @@ export const usersRepository = {
     async findUsers(searchLoginTerm?: string | null | undefined, searchEmailTerm?: string | null | undefined,
                     pageNumber?: string | null | undefined, pageSize?: string | null | undefined,
                     sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetUserType> {
-        const filter: any = {}
-        if (searchLoginTerm) {
+        let filter: any = {}
+        if (searchLoginTerm && searchEmailTerm) {
+            filter = {
+                $or: [{'accountData.userName': {'$regex': 'log', '$options': 'i'}},
+                    {'accountData.email': {'$regex': 'gg', '$options': 'i'}}]
+            }
+        } else if (searchLoginTerm) {
             filter["accountData.userName"] = {$regex: searchLoginTerm, $options : "i"}
-        }
-        if (searchEmailTerm) {
+        } else if (searchEmailTerm) {
             filter["accountData.email"] = {$regex: searchEmailTerm, $options : "i"}
         }
 
