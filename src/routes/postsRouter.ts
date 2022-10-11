@@ -156,7 +156,7 @@ postsRouter.delete('/', authBasicMiddleware, async (req: Request, res: Response)
         res.send(204)
 })
 
-postsRouter.post('/:postId/comments', authBearerMiddleware, async (req: Request, res: Response) => {
+postsRouter.post('/:postId/comments', async (req: Request, res: Response) => {
     let errorMessages = []
     const id = req.params.postId
     const isPostExist = await postsService.findPostById(id)
