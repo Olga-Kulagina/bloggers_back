@@ -25,7 +25,7 @@ export const commentsRepository = {
         return newComment
     },
     async findCommentById(id: string): Promise<CommentType | null> {
-        const comment = await commentsCollection.findOne({id: id}, {projection: {_id: 0, postId: 0, createdAt: 0}})
+        const comment = await commentsCollection.findOne({id: id}, {projection: {_id: 0, postId: 0}})
         return comment
     },
     async findComments(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetCommentsType | null> {
