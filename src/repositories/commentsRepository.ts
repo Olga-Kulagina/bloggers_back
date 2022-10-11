@@ -1,4 +1,4 @@
-import {commentsCollection, postsCollection, usersCollection} from "./db";
+import {bloggersCollection, commentsCollection, postsCollection, usersCollection} from "./db";
 import {UserType} from "./usersRepository";
 
 
@@ -28,11 +28,18 @@ export const commentsRepository = {
         const comment = await commentsCollection.findOne({id: id}, {projection: {_id: 0, postId: 0}})
         return comment
     },
-    async findComments(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined): Promise<GetCommentsType | null> {
+    async findComments(id: string, PageNumber?: string | null | undefined , PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetCommentsType | null> {
         let a = PageNumber || 1
         let b = PageSize || 10
         let comments = await commentsCollection.find({postId: id}, {projection: {_id: 0}}).toArray()
-        let items = await commentsCollection.find({postId: id}, {projection: {_id: 0, postId: 0}}).skip((+a - 1) * +b).limit(+b).toArray()
+
+        let sortingValue = sortBy || "createdAt"
+        let items
+        if (sortDirection === "asc") {
+            items = await commentsCollection.find({postId: id}, {projection: {_id: 0, postId: 0}}).sort({[sortingValue]: 1}).skip((+a - 1) * +b).limit(+b).toArray()
+        } else {
+            items = await commentsCollection.find({postId: id}, {projection: {_id: 0, postId: 0}}).sort({[sortingValue]: -1}).skip((+a - 1) * +b).limit(+b).toArray()
+        }
 
         return {
             "pagesCount": Math.ceil(comments.length/+b),

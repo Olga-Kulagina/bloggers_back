@@ -21,8 +21,8 @@ export const commentsService = {
         let comment = await commentsRepository.findCommentById(createdComment.id)
         return comment
     },
-    async findCommentsByPostId(id: string, PageNumber?: string | null | undefined, PageSize?: string | null | undefined): Promise<GetCommentsType | null> {
-        return commentsRepository.findComments(id, PageNumber, PageSize)
+    async findCommentsByPostId(id: string, PageNumber?: string | null | undefined, PageSize?: string | null | undefined, sortBy?: string | null | undefined, sortDirection?: string | null | undefined): Promise<GetCommentsType | null> {
+        return commentsRepository.findComments(id, PageNumber, PageSize, sortBy, sortDirection)
     },
     async findCommentById(id: string): Promise<CommentType | null> {
         return commentsRepository.findCommentById(id)

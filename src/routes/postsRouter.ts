@@ -191,7 +191,7 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     if (errorMessages.length > 0) {
         res.status(404).send(error(errorMessages))
     } else {
-        const foundComments = await commentsService.findCommentsByPostId(id, req.query.PageNumber?.toString(), req.query.PageSize?.toString())
+        const foundComments = await commentsService.findCommentsByPostId(id, req.query.pageNumber?.toString(), req.query.pageSize?.toString(), req.query.sortBy?.toString(), req.query.sortDirection?.toString())
         res.send(foundComments)
     }
 })
