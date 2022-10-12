@@ -17,7 +17,9 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
             req.user = await usersService.findUserById(userId)
             next()
             return
+        } else {
+            next()
         }
-        next()
+
     }
 }
