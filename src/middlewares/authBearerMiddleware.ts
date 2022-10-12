@@ -7,6 +7,10 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         res.send(401)
         return
     }
+    if (req.headers.authorization.split(' ')[0] !== "Bearer") {
+        res.send(401)
+        return
+    }
     const token = req.headers.authorization.split(' ')[1]
     const expiredTime = await jwtUtility.getExpiredTime(token)
     if (expiredTime && Date.now() / 1000 > +expiredTime) {
@@ -20,6 +24,5 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         } else {
             next()
         }
-
     }
 }
