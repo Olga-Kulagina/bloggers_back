@@ -22,7 +22,7 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
             next()
             return
         } else {
-            next()
+            res.send(401)
         }
     }
 }
