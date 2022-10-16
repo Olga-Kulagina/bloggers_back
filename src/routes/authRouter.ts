@@ -56,7 +56,7 @@ authRouter.get('/me', authBearerMiddleware,
 
 authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
-        if (!req.headers || !req.body) {
+        if (!req.headers) {
             res.send(401)
         } else {
             const refreshToken = req.cookies.refreshToken
@@ -93,16 +93,9 @@ authRouter.post('/refresh-token',
         }
     })
 
-function isEmpty(obj: any) {
-    for (let key in obj) {
-        return false;
-    }
-    return true;
-}
-
 authRouter.post('/logout',
     async (req: Request, res: Response) => {
-        if (!req.headers || isEmpty(req.body)) {
+        if (!req.headers) {
             res.send(401)
         } else {
             const refreshToken = req.cookies.refreshToken
