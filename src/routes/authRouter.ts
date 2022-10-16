@@ -93,9 +93,16 @@ authRouter.post('/refresh-token',
         }
     })
 
+function isEmpty(obj: any) {
+    for (let key in obj) {
+        return false;
+    }
+    return true;
+}
+
 authRouter.post('/logout',
     async (req: Request, res: Response) => {
-        if (!req.headers || !req.body) {
+        if (!req.headers || isEmpty(req.body)) {
             res.send(401)
         } else {
             const refreshToken = req.cookies.refreshToken
