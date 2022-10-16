@@ -88,13 +88,9 @@ authRouter.post('/refresh-token',
 authRouter.post('/logout',
     async (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken
-        if (!refreshToken) {
+        const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
+        if (!refreshToken || !expiredTime || expiredTime && Date.now() / 1000 > +expiredTime) {
             res.send(401)
-        } else {
-            const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
-            if (expiredTime && Date.now() / 1000 > +expiredTime) {
-                res.send(401)
-            }
         }
         res.sendStatus(204)
     }
