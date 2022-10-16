@@ -76,7 +76,11 @@ authRouter.post('/refresh-token',
                         httpOnly: true,
                         secure: true
                     })
-                    await tokensRepository.updateTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
+                    await tokensRepository.updateTokens({
+                        userId: user.id,
+                        accessToken: token,
+                        refreshToken: refreshToken
+                    })
                     res.status(200).send({accessToken: token})
                 } else {
                     res.sendStatus(401)
@@ -87,16 +91,21 @@ authRouter.post('/refresh-token',
 
 authRouter.post('/logout',
     async (req: Request, res: Response) => {
-        const refreshToken = req.cookies.refreshToken
-        if (!refreshToken) {
+        if (!req.headers || !req.body) {
             res.send(401)
         } else {
-            const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
-            if (!expiredTime || expiredTime && Date.now() / 1000 > +expiredTime) {
+            const refreshToken = req.cookies.refreshToken
+            if (!refreshToken) {
                 res.send(401)
+            } else {
+                const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
+                if (!expiredTime || expiredTime && Date.now() / 1000 > +expiredTime) {
+                    res.send(401)
+                } else {
+                    res.sendStatus(204)
+                }
             }
         }
-        res.sendStatus(204)
     }
 )
 
