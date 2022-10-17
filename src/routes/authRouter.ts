@@ -67,7 +67,7 @@ authRouter.post('/refresh-token',
                 }
                 const isValid = await tokensRepository.isValidRefreshToken(user.id, refreshToken)
                 if (!isValid) {
-                    res.send(402)
+                    res.send(401)
                 } else {
                     if (user) {
                         const token = await jwtUtility.createJWT(user.id)
@@ -83,7 +83,7 @@ authRouter.post('/refresh-token',
                         })
                         res.status(200).send({accessToken: token})
                     } else {
-                        res.sendStatus(403)
+                        res.sendStatus(401)
                     }
                 }
             }
@@ -91,9 +91,6 @@ authRouter.post('/refresh-token',
 
 authRouter.post('/logout',
     async (req: Request, res: Response) => {
-        if (!req.headers) {
-            res.send(401)
-        } else {
             const refreshToken = req.cookies.refreshToken
             if (!refreshToken) {
                 res.send(401)
@@ -105,7 +102,6 @@ authRouter.post('/logout',
                     res.sendStatus(204)
                 }
             }
-        }
     }
 )
 
