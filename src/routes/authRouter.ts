@@ -56,12 +56,9 @@ authRouter.get('/me', authBearerMiddleware,
 
 authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
-        if (!req.headers) {
-            res.send(401)
-        } else {
             const refreshToken = req.cookies.refreshToken
             const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
-            if (!expiredTime || expiredTime && Date.now() / 1000 > +expiredTime) {
+            if (expiredTime && Date.now() / 1000 > +expiredTime) {
                 res.send(401)
             } else {
                 const userId = await jwtUtility.getUserFromRefreshJWT(refreshToken)
@@ -90,7 +87,6 @@ authRouter.post('/refresh-token',
                     }
                 }
             }
-        }
     })
 
 authRouter.post('/logout',
