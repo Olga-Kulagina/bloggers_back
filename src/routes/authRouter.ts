@@ -67,7 +67,7 @@ authRouter.post('/refresh-token',
                 }
                 const isValid = await tokensRepository.isValidRefreshToken(user.id, refreshToken)
                 if (!isValid) {
-                    res.send(401)
+                    res.send(402)
                 } else {
                     if (user) {
                         const token = await jwtUtility.createJWT(user.id)
@@ -83,7 +83,7 @@ authRouter.post('/refresh-token',
                         })
                         res.status(200).send({accessToken: token})
                     } else {
-                        res.sendStatus(401)
+                        res.sendStatus(403)
                     }
                 }
             }
