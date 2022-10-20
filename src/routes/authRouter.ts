@@ -96,7 +96,7 @@ authRouter.post('/logout',
                 res.send(401)
             } else {
                 const expiredTime = await jwtUtility.getExpiredTimeForRefresh(refreshToken)
-                if (!expiredTime || expiredTime && Date.now() / 1000 > +expiredTime) {
+                if (expiredTime && Date.now() / 1000 > +expiredTime) {
                     res.send(401)
                 } else {
                     res.sendStatus(204)
