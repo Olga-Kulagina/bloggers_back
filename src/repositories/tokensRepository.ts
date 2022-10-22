@@ -1,4 +1,7 @@
 import {tokensCollection} from "./db";
+import jwt from "jsonwebtoken";
+import {settings} from "../settings";
+import {jwtUtility} from "../application/jwt-utility";
 
 export type UsersTokensType = {
     userId: string,
@@ -16,13 +19,7 @@ export const tokensRepository = {
         return tokens
     },
     async isValidRefreshToken(id: string, token: string): Promise<boolean> {
-        const result = await tokensCollection.findOne({userId: id}, {projection: {_id: 0}})
-        if (result?.refreshToken === token) {
-            return true
-        } else {
-            return false
-        }
-
+        return await jwtUtility.verifyRefreshToken(token)
     },
 
 }

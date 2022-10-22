@@ -39,6 +39,14 @@ export const jwtUtility = {
             return null
         }
     },
+    async verifyRefreshToken(token: string): Promise<boolean> {
+        try {
+            const result: any = jwt.verify(token, settings.REFRESH_JWT_SECRET)
+            return true
+        } catch (error) {
+            return false
+        }
+    },
     async getUserFromRefreshJWT(refreshToken: string): Promise<string | null> {
         try {
             const result: any = jwt.verify(refreshToken, settings.REFRESH_JWT_SECRET)
