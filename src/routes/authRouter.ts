@@ -80,7 +80,7 @@ authRouter.post('/refresh-token',
                     await tokensRepository.updateTokens({
                         userId: user.id,
                         accessToken: token,
-                        refreshToken: refreshToken
+                        refreshToken: newRefreshToken
                     })
                     res.status(200).send({accessToken: token})
                 } else {
