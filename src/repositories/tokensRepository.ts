@@ -10,6 +10,15 @@ export type UsersTokensType = {
 }
 
 export const tokensRepository = {
+    async isTokenExist(id: string): Promise<boolean> {
+        const result = await tokensCollection.findOne({userId: id}, {projection: {_id: 0}})
+        if (result) {
+            return true
+        } else {
+            return false
+        }
+
+    },
     async createTokens(tokens: UsersTokensType): Promise<UsersTokensType> {
         const result = await tokensCollection.insertOne(tokens)
         return tokens

@@ -31,7 +31,16 @@ authRouter.post('/login',
                     httpOnly: true,
                     secure: true
                 })
-                await tokensRepository.createTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
+                let tokensExist = await tokensRepository.isTokenExist(user.id)
+                if (tokensExist) {
+                    await tokensRepository.updateTokens({
+                        userId: user.id,
+                        accessToken: token,
+                        refreshToken: refreshToken
+                    })
+                } else {
+                    await tokensRepository.createTokens({userId: user.id, accessToken: token, refreshToken: refreshToken})
+                }
                 res.status(200).send({accessToken: token})
             } else {
                 res.sendStatus(401)
